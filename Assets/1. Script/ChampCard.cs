@@ -10,6 +10,10 @@ public class ChampCard : MonoBehaviour
     Color TierColor;
     Color StarColor;
 
+    //기본정보
+    public int star;
+    public int coin;
+
     //-일반 공격
     public int AtDMG;
     public int AtRange;
