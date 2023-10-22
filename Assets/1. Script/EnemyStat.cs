@@ -16,25 +16,4 @@ public class EnemyStat : MonoBehaviour
         hp = MaxHp;
     }
 
-
-    //public void OnControllerColliderHit(ControllerColliderHit hit)
-    //{
-    //    if (hit.gameObject.layer == 8)
-    //    {
-    //        PlBullet bulletdmg = hit.gameObject.GetComponent<PlBullet>();
-    //        hp -= bulletdmg.dmg;
-    //        hit.gameObject.SetActive(false);
-
-    //        if (hp < 0)
-    //            gameObject.SetActive(false);
-    //    }
-
-    //    if (hit.gameObject.layer == 6)
-    //    {
-    //        Goal goal = hit.gameObject.GetComponent<Goal>();
-    //        gameObject.SetActive(false);
-    //        goal.hp -= dmg;
-    //    }
-    //}
-
 }

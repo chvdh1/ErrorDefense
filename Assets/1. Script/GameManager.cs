@@ -10,13 +10,24 @@ using Debug = UnityEngine.Debug;
 
 public class GameManager : MonoBehaviour
 {
-    public static int lv;
-    public static Action gameover;
+    public static GameManager Instance;
+    public UIManager ui;
+    public int lv;
 
+    public int maxHp;
+    public int hp;
+
+    public int[] maxExp;
+    public int exp;
+    public int coin;
+    public int continuity;
+    public int champBlank;
+    public int[] synergy = new int[21];
+    public int[] augmentation = new int[3]; // 증강
     int[] tierPercentage = new int[4]; //각 레벨에 맞는 확률 기입
 
-    public static int synergy;
-    public static int augmentation;
+    public static Action gameover;
+
     public static int gamestat; // 0 = 로비 , 1 게임 진행 , 
 
 
@@ -27,6 +38,8 @@ public class GameManager : MonoBehaviour
     public GameObject[] mapPoints;
     int stageIndex;
 
+    public static int totalEnemy;
+    public static int curEnemy;
 
     //적 관련 변수
     public PoolManager enemyPool;
@@ -36,6 +49,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
         gameover = () => { GameOver(); };
 
 
@@ -45,16 +59,19 @@ public class GameManager : MonoBehaviour
         {
             mapPointParent[i] = maps.transform.GetChild(i).gameObject;
         }
+        ui = UIManager.uIManager;
     }
 
     public void GameStart()
     {
         //최대체력으로 시작
-        Goal goalSc = goal.GetComponent<Goal>();
-        goalSc.hp = goalSc.maxHp;
+        hp = maxHp;
 
         //스테이지 초기화
         stageIndex = 1;
+
+        //시너지 초기화
+        ui.SynergyReset();
 
         //적 무브포인트 인지
         int count = mapPointParent[mapIndex-1].transform.childCount;
@@ -87,12 +104,82 @@ public class GameManager : MonoBehaviour
         StartCoroutine(SpawnEnemy());
     }
 
+
+    IEnumerator SpawnEnemy()
+    {
+        int enemySpawnindex = stageIndex + 2;
+        int enemytype = 1;
+        int enemytypeMin = 0;
+        
+        switch (stageIndex)
+        {
+            case < 5:
+                enemytype = 1;
+                enemytypeMin = 0;
+                break;
+            case < 10:
+                enemytype = 2;
+                enemytypeMin = 0;
+                break;
+            case < 15:
+                enemytype = 3;
+                enemytypeMin = 0;
+                break;
+            case < 20:
+                enemytype = 4;
+                enemytypeMin = 1;
+                break;
+            case < 25:
+                enemytype = 5;
+                enemytypeMin = 1;
+                break;
+            case < 30:
+                enemytype = 6;
+                enemytypeMin = 2;
+                break;
+            case < 35:
+                enemytype = 7;
+                enemytypeMin = 3;
+                break;
+            case >= 35:
+                enemytype = 8;
+                enemytypeMin = 5;
+                break;
+        }
+
+        int rantype = UnityEngine.Random.Range(enemytypeMin, enemytype);
+        yield return new WaitForFixedUpdate();
+        for (int i = 0; i < enemySpawnindex; i++)
+        {
+            GameObject enemy = enemyPool.Get(rantype);
+            enemy.transform.position = spawnPos[mapIndex-1].position;
+            EnemyMove em = enemy.GetComponent<EnemyMove>();
+            em.goal = goal;
+            em.movePoint = new Transform[mapPoints.Length];
+            for (int m = 0; m < em.movePoint.Length; m++)
+            {
+                em.movePoint[m] = mapPoints[m].transform;
+                yield return new WaitForFixedUpdate();
+            }
+            yield return new WaitForSeconds(1);
+        }
+
+        //스테이지 끝 확인
+        totalEnemy = enemySpawnindex;
+        while(totalEnemy != curEnemy)
+        {
+            yield return new WaitForSeconds(1);
+        }
+
+        stageIndex ++;
+        StartCoroutine(DelayTime());
+    }
     public void Reroll() //카드 소환
     {
         int cells = 5; //보여줄 카드 수
-        
+
         // 레벨 인지 후 확률 기입
-        switch(lv)
+        switch (lv)
         {
             case 1:
             case 2:
@@ -162,9 +249,9 @@ public class GameManager : MonoBehaviour
 
             if (ran <= tierPercentage[0]) //1티어 소환
             { }
-            else if (ran <= tierPercentage[0]+tierPercentage[1])//2티어 소환
+            else if (ran <= tierPercentage[0] + tierPercentage[1])//2티어 소환
             { }
-            else if (ran <= tierPercentage[0] + tierPercentage[1]+tierPercentage[2])//3티어 소환
+            else if (ran <= tierPercentage[0] + tierPercentage[1] + tierPercentage[2])//3티어 소환
             { }
             else if (ran <= tierPercentage[0] + tierPercentage[1] + tierPercentage[2] + tierPercentage[3])//4티어 소환
             { }
@@ -173,65 +260,4 @@ public class GameManager : MonoBehaviour
         }
 
     }
-
-    IEnumerator SpawnEnemy()
-    {
-        int enemySpawnindex = stageIndex + 2;
-        int enemytype = 1;
-        int enemytypeMin = 0;
-        switch (stageIndex)
-        {
-            case < 5:
-                enemytype = 1;
-                enemytypeMin = 0;
-                break;
-            case < 10:
-                enemytype = 2;
-                enemytypeMin = 0;
-                break;
-            case < 15:
-                enemytype = 3;
-                enemytypeMin = 0;
-                break;
-            case < 20:
-                enemytype = 4;
-                enemytypeMin = 1;
-                break;
-            case < 25:
-                enemytype = 5;
-                enemytypeMin = 1;
-                break;
-            case < 30:
-                enemytype = 6;
-                enemytypeMin = 2;
-                break;
-            case < 35:
-                enemytype = 7;
-                enemytypeMin = 3;
-                break;
-            case >= 35:
-                enemytype = 8;
-                enemytypeMin = 5;
-                break;
-        }
-
-        int rantype = UnityEngine.Random.Range(enemytypeMin, enemytype);
-        yield return new WaitForFixedUpdate();
-        for (int i = 0; i < enemySpawnindex; i++)
-        {
-            GameObject enemy = enemyPool.Get(rantype);
-            enemy.transform.position = spawnPos[mapIndex-1].position;
-            EnemyMove em = enemy.GetComponent<EnemyMove>();
-            em.goal = goal;
-            em.movePoint = new Transform[mapPoints.Length];
-            for (int m = 0; m < em.movePoint.Length; m++)
-            {
-                em.movePoint[m] = mapPoints[m].transform;
-                Debug.Log(m);
-                yield return new WaitForFixedUpdate();
-            }
-            yield return new WaitForSeconds(1);
-        }
-    }
-
 }

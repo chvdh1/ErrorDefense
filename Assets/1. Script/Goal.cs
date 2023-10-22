@@ -4,17 +4,27 @@ using UnityEngine;
 
 public class Goal : MonoBehaviour
 {
-    public int maxHp;
-    public int hp;
+    public GameManager gm;
+    UIManager ui;
+
+    private void Awake()
+    {
+        gm = GameManager.Instance;
+        ui = UIManager.uIManager;
+
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.layer == 7)
         {
             EnemyStat es = collision.gameObject.GetComponent<EnemyStat>();
-            hp -= es.dmg;
+            gm.hp -= es.dmg;
 
-            if (hp < 0)
+            collision.gameObject.SetActive(false);
+
+            ui.HpUpdate();
+            if (gm.hp < 0)
                 GameManager.gameover();
         }
     }

@@ -34,6 +34,7 @@ public class PlBullet : MonoBehaviour
             if (es.hp < 0)
                 collision.gameObject.SetActive(false);
             gameObject.SetActive(false);
+            GameManager.curEnemy++;
         }
     }
 }

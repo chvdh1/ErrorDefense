@@ -13,6 +13,11 @@ public class EnemyMove : MonoBehaviour
 
     public bool fly;
 
+
+    private void OnEnable()
+    {
+        movePointIndex = 0;
+    }
     private void Update()
     {
         MovePath();

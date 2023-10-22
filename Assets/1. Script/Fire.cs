@@ -7,6 +7,7 @@ public class Fire : MonoBehaviour
     public PoolManager bulletPool;
     public Targeting layder;
 
+    public int dmg;
     public float coolTime;
     public float shootTime;
 
@@ -27,6 +28,7 @@ public class Fire : MonoBehaviour
         PlBullet pb = bulletPool.Get(0).gameObject.GetComponent<PlBullet>();
         pb.gameObject.transform.position = transform.position;
         pb.targetEnemy = layder.nearestTarget;
+        pb.dmg = dmg;
 
 
     }
