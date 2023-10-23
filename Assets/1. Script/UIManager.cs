@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,17 +10,19 @@ public class SynergyInfo
     public string sName = "";
     public int sCount = 0;
     public int sStep = 0;
+    public int sSNum = 0;
 
-    public SynergyInfo(string Name, int count, int step)
+    public SynergyInfo(string Name, int count, int step, int num)
     {
         sName = Name;
         sCount = count;
         sStep = step;
+        sSNum = num;
     }
     public void PrintInfo()
     {
-        string str = string.Format("이름({0}) 수량({1}) 단계({2})",
-                                    sName, sCount, sStep);
+        string str = string.Format("이름({0}) 수량({1}) 단계({2}) 넘버({3})",
+                                    sName, sCount, sStep, sSNum);
         Debug.Log(str);
     }
 }
@@ -43,6 +46,9 @@ public class UIManager : MonoBehaviour
     public Sprite[] continuitySprites;
     Text continuityText;
 
+    public GameObject sGroup;
+    GameObject[] sBtn = new GameObject[8];
+
     private void Awake()
     {
         uIManager = this;
@@ -52,7 +58,10 @@ public class UIManager : MonoBehaviour
         expText = transform.GetChild(3).GetChild(1).gameObject.GetComponent<Text>();
         hpText = transform.GetChild(4).gameObject.GetComponent<Text>();
         continuityText = continuity.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>();
-
+        for (int i = 0; i < sBtn.Length; i++)
+        {
+            sBtn[i] = sGroup.transform.GetChild(i).gameObject.GetComponent<GameObject>();
+        }
 
         gm = GameManager.Instance;
     }
@@ -96,21 +105,21 @@ public class UIManager : MonoBehaviour
 
     public void SynergyReset()
     {
-        SynergyInfo node = new SynergyInfo("백신", 0, 0);
+        SynergyInfo node = new SynergyInfo("백신", 0, 0,0);
         synergyInfos.Add(node);
-        node = new SynergyInfo("침착", 0, 0);
+        node = new SynergyInfo("침착", 0, 0,1);
         synergyInfos.Add(node);
-        node = new SynergyInfo("신중", 0, 0);
+        node = new SynergyInfo("신중", 0, 0,2);
         synergyInfos.Add(node);
-        node = new SynergyInfo("속기", 0, 0);
+        node = new SynergyInfo("속기", 0, 0,3);
         synergyInfos.Add(node);
-        node = new SynergyInfo("침착", 0, 0);
+        node = new SynergyInfo("침착", 0, 0,4);
         synergyInfos.Add(node);
-        node = new SynergyInfo("생각", 0, 0);
+        node = new SynergyInfo("생각", 0, 0,5);
         synergyInfos.Add(node);
-        node = new SynergyInfo("디자인", 0, 0);
+        node = new SynergyInfo("디자인", 0, 0,6);
         synergyInfos.Add(node);
-        node = new SynergyInfo("프로토타이핑", 0, 0);
+        node = new SynergyInfo("프로토타이핑", 0, 0,7);
         synergyInfos.Add(node);
         for (int i = 0; i < synergyInfos.Count; i++)
         {
@@ -118,8 +127,30 @@ public class UIManager : MonoBehaviour
         }
     }
    
+    int stepDESC(SynergyInfo a, SynergyInfo b) //DESC : 내림차순정렬(높은 순에서 낮은 순으로 정렬)
+    {
+        return b.sStep.CompareTo(a.sStep);
+    }
+
     public void SynergyUpdate()
     {
+        //활성화 된 시너지 중 높은 단계 순으로 정렬
+        synergyInfos.Sort(stepDESC);//Sort : 리스트 정렬 함수
 
+        //정령된 리스트의 순서에 따라 하이라이키 변경
+        for (int i = synergyInfos.Count-1; i >= 0; i--)
+        {
+            sBtn[i].transform.SetSiblingIndex(i);
+        }
+
+        //하나라도 가지고 있는 시너지 시각화
+        for (int i = 0; i < synergyInfos.Count; i++)
+        {
+            if (synergyInfos[i].sCount > 0)
+                sBtn[i].SetActive(true);
+            
+            else
+                sBtn[i].SetActive(false);
+        }
     }
 }

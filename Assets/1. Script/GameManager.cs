@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public UIManager ui;
+    ShopManager sm;
     public int lv;
 
     public int maxHp;
@@ -60,6 +61,7 @@ public class GameManager : MonoBehaviour
             mapPointParent[i] = maps.transform.GetChild(i).gameObject;
         }
         ui = UIManager.uIManager;
+        sm = ShopManager.shopManager;
     }
 
     public void GameStart()
@@ -248,15 +250,15 @@ public class GameManager : MonoBehaviour
             int ran = UnityEngine.Random.Range(1, 101);
 
             if (ran <= tierPercentage[0]) //1티어 소환
-            { }
+            { sm.Champ1Produce(); }
             else if (ran <= tierPercentage[0] + tierPercentage[1])//2티어 소환
-            { }
+            { sm.Champ2Produce(); }
             else if (ran <= tierPercentage[0] + tierPercentage[1] + tierPercentage[2])//3티어 소환
-            { }
+            { sm.Champ3Produce(); }
             else if (ran <= tierPercentage[0] + tierPercentage[1] + tierPercentage[2] + tierPercentage[3])//4티어 소환
-            { }
+            { sm.Champ4Produce(); }
             else//5티어 소환
-            { }
+            { sm.Champ5Produce(); }
         }
 
     }
