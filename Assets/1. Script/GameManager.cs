@@ -7,6 +7,7 @@ using UnityEngine;
 using System;
 using UnityEngine.UIElements;
 using Debug = UnityEngine.Debug;
+using UnityEngine.PlayerLoop;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,13 +16,15 @@ public class GameManager : MonoBehaviour
     ShopManager sm;
     public int lv;
 
+    public GameObject[] fieldUnit=new GameObject[15];
+
     public int maxHp;
     public int hp;
 
     public int[] maxExp;
     public int exp;
     public int coin;
-    public int continuity;
+    public int continuity; // 연승패 코인
     public int champBlank;
     public int[] synergy = new int[21];
     public int[] augmentation = new int[3]; // 증강
@@ -44,6 +47,7 @@ public class GameManager : MonoBehaviour
 
     //적 관련 변수
     public PoolManager enemyPool;
+    public PoolManager bulletPool;
     public GameObject goal;
     public Transform[] spawnPos;
 
@@ -96,6 +100,7 @@ public class GameManager : MonoBehaviour
     IEnumerator DelayTime()
     {
         float t = stageIndex == 1 ? 5 : 10;
+        ui.StartCoroutine(ui.TimeUpdate(t));
         yield return new WaitForFixedUpdate();
         while(t>0)
         {
@@ -173,13 +178,13 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(1);
         }
 
+        Reroll();
         stageIndex ++;
         StartCoroutine(DelayTime());
     }
     public void Reroll() //카드 소환
     {
-        int cells = 5; //보여줄 카드 수
-
+        sm.DelCards();
         // 레벨 인지 후 확률 기입
         switch (lv)
         {
@@ -245,7 +250,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        for (int i = 0; i < cells; i++)
+        for (int i = 0; i < 5; i++)
         {
             int ran = UnityEngine.Random.Range(1, 101);
 
@@ -260,6 +265,5 @@ public class GameManager : MonoBehaviour
             else//5티어 소환
             { sm.Champ5Produce(); }
         }
-
     }
 }

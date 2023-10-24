@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -42,23 +43,19 @@ public class ShopManager : MonoBehaviour
     List<ChampShop> cost5 = new List<ChampShop>();
 
 
-    public GameObject[] cost1Champs;
-    public GameObject[] cost2Champs;
-    public GameObject[] cost3Champs;
-    public GameObject[] cost4Champs;
-    public GameObject[] cost5Champs;
+    // ------------ 카드 소환
 
-    public PoolManager cost1Pool;
-    public PoolManager cost2Pool;
-    public PoolManager cost3Pool;
-    public PoolManager cost4Pool;
-    public PoolManager cost5Pool;
+    public GameObject pools;
+    public PoolManager[] costPool = new PoolManager[5];
 
-    public Transform shop;
-
+    GameObject[] cells = new GameObject[5];
     private void Awake()
     {
         shopManager = this;
+        for (int i = 0; i < costPool.Length; i++)
+        {
+            costPool[i] = pools.transform.GetChild(i + 7).gameObject.GetComponent<PoolManager>();
+        }
     }
 
     public void ChampReset() //코스트 초기화
@@ -180,14 +177,33 @@ public class ShopManager : MonoBehaviour
             cost5[i].PrintInfo();
         }
     }
+    public void DelCards()
+    {
+        for (int c = 0; c < cells.Length; c++)
+        {
+            if (cells[c] != null)
+            {
+                cells[c].SetActive(false);
+                cells[c] = null;
+            }
+        }
+    }
+
 
     public void Champ1Produce()
     {
         int i = Random.Range(0, cost1.Count);
         int num = cost1[i].cNum;
        
-        Transform ch1 = cost1Pool.Get(num).transform;
-        ch1.parent = shop;
+        Transform ch1 = costPool[0].Get(num).transform;
+        ch1.parent = transform;
+
+        for (int c = 0; c < cells.Length; c++)
+        {
+            if (cells[c] == null)
+                cells[c] = ch1.gameObject;
+        }
+        
 
         cost1[i].cCount++;
         if (cost1[i].cCount >= cost1[i].cMax)
@@ -198,9 +214,13 @@ public class ShopManager : MonoBehaviour
     {
         int i = Random.Range(0, cost2.Count);
         int num = cost2[i].cNum;
-        Transform ch2 = cost2Pool.Get(num).transform;
-        ch2.parent = shop;
-
+        Transform ch2 = costPool[1].Get(num).transform;
+        ch2.parent = transform; ;
+        for (int c = 0; c < cells.Length; c++)
+        {
+            if (cells[c] == null)
+                cells[c] = ch2.gameObject;
+        }
         cost2[i].cCount++;
         if (cost2[i].cCount >= cost2[i].cMax)
             cost2.RemoveAt(i);
@@ -209,9 +229,13 @@ public class ShopManager : MonoBehaviour
     {
         int i = Random.Range(0, cost3.Count);
         int num = cost3[i].cNum;
-        Transform ch3 = cost3Pool.Get(num).transform;
-        ch3.parent = shop;
-
+        Transform ch3 = costPool[2].Get(num).transform;
+        ch3.parent = transform;
+        for (int c = 0; c < cells.Length; c++)
+        {
+            if (cells[c] == null)
+                cells[c] = ch3.gameObject;
+        }
         cost3[i].cCount++;
         if (cost3[i].cCount >= cost3[i].cMax)
             cost3.RemoveAt(i);
@@ -220,9 +244,13 @@ public class ShopManager : MonoBehaviour
     {
         int i = Random.Range(0, cost4.Count);
         int num = cost4[i].cNum;
-        Transform ch4 = cost4Pool.Get(num).transform;
-        ch4.parent = shop;
-
+        Transform ch4 = costPool[3].Get(num).transform;
+        ch4.parent = transform;
+        for (int c = 0; c < cells.Length; c++)
+        {
+            if (cells[c] == null)
+                cells[c] = ch4.gameObject;
+        }
         cost4[i].cCount++;
         if (cost4[i].cCount >= cost4[i].cMax)
             cost4.RemoveAt(i);
@@ -231,9 +259,13 @@ public class ShopManager : MonoBehaviour
     {
         int i = Random.Range(0, cost5.Count);
         int num = cost5[i].cNum;
-        Transform ch5 = cost5Pool.Get(num).transform;
-        ch5.parent = shop;
-
+        Transform ch5 = costPool[4].Get(num).transform;
+        ch5.parent = transform;
+        for (int c = 0; c < cells.Length; c++)
+        {
+            if (cells[c] == null)
+                cells[c] = ch5.gameObject;
+        }
         cost5[i].cCount++;
         if (cost5[i].cCount >= cost5[i].cMax)
             cost5.RemoveAt(i);

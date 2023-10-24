@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,6 +35,7 @@ public class UIManager : MonoBehaviour
 
     GameManager gm;
 
+    public Image timeBar;
     public GameObject lvHp;
     Image hp;
     Image exp;
@@ -45,7 +47,7 @@ public class UIManager : MonoBehaviour
     public Image continuity;
     public Sprite[] continuitySprites;
     Text continuityText;
-
+    public Text noText;
     public GameObject sGroup;
     GameObject[] sBtn = new GameObject[8];
 
@@ -92,6 +94,64 @@ public class UIManager : MonoBehaviour
     {
         coinText.text = string.Format("{0}", gm.coin);
     }
+
+    public IEnumerator TimeUpdate(float t)
+    {
+        float i = t;
+        yield return new WaitForFixedUpdate();
+        while (t > 0)
+        {
+            timeBar.fillAmount = t / i;
+            yield return new WaitForFixedUpdate();
+        }
+       
+    }
+    public IEnumerator NoCoin()
+    {
+        if (noText.color.a != 0)
+            yield break;
+
+        noText.text = "코인이 부족합니다.";
+        noText.color = new Color(1, 1, 1, 1);
+        float c = 1;
+        while (noText.color.a > 0)
+        {
+            noText.color = new Color(1, 1, 1, c);
+            c -= 0.5f*Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+    }
+    public IEnumerator NoWaitingSeat()
+    {
+        if (noText.color.a != 0)
+            yield break;
+
+        noText.text = "대기석에 자리가 없습니다.";
+        noText.color = new Color(1, 1, 1, 1);
+        float c = 1;
+        while (noText.color.a > 0)
+        {
+            noText.color = new Color(1, 1, 1, c);
+            c -= 0.5f * Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+    }
+    public IEnumerator NoEmptySeats()
+    {
+        if (noText.color.a != 0)
+            yield break;
+
+        noText.text = "빈자리가 없습니다.";
+        noText.color = new Color(1, 1, 1, 1);
+        float c = 1;
+        while (noText.color.a > 0)
+        {
+            noText.color = new Color(1, 1, 1, c);
+            c -= 0.5f * Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
 
     public void ContinuityUpdate()
     {
