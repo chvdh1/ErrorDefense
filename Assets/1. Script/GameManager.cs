@@ -13,7 +13,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public UIManager ui;
-    ShopManager sm;
+    public WaitingSeat ws;
+    public ShopManager sm;
     public int lv;
 
     public GameObject[] fieldUnit=new GameObject[15];
@@ -40,6 +41,8 @@ public class GameManager : MonoBehaviour
     public GameObject maps;
     public GameObject[] mapPointParent;
     public GameObject[] mapPoints;
+    public GameObject noSetP;
+    GameObject[] noSet;
     int stageIndex;
 
     public static int totalEnemy;
@@ -64,17 +67,40 @@ public class GameManager : MonoBehaviour
         {
             mapPointParent[i] = maps.transform.GetChild(i).gameObject;
         }
-        ui = UIManager.uIManager;
-        sm = ShopManager.shopManager;
+        int n = noSetP.transform.childCount;
+        noSet = new GameObject[n];
+        for (int i = 0; i < noSet.Length; i++)
+        {
+            noSet[i] = noSetP.transform.GetChild(i).gameObject;
+        }
     }
 
     public void GameStart()
     {
         //최대체력으로 시작
         hp = maxHp;
+        lv = 1;
+        coin = 0;
+        exp = 0;
 
         //스테이지 초기화
         stageIndex = 1;
+       
+
+        //지정 맵 소환, 그외 비활성화
+        for (int i = 0; i < noSet.Length; i++)
+        {
+            if(i == mapIndex-1)
+            {
+                noSet[i].SetActive(true);
+                mapPointParent[i].SetActive(true);
+            }
+            else
+            {
+                noSet[i].SetActive(false);
+                mapPointParent[i].SetActive(false);
+            }
+        }
 
         //시너지 초기화
         ui.SynergyReset();
@@ -89,6 +115,7 @@ public class GameManager : MonoBehaviour
             else
                 mapPoints[i] = goal;
         }
+
         StartCoroutine(DelayTime());
     }
 
@@ -100,11 +127,13 @@ public class GameManager : MonoBehaviour
     IEnumerator DelayTime()
     {
         float t = stageIndex == 1 ? 5 : 10;
-        ui.StartCoroutine(ui.TimeUpdate(t));
+        float maxt = t;
+
         yield return new WaitForFixedUpdate();
         while(t>0)
         {
             t -= Time.fixedDeltaTime;
+            ui.timeBar.fillAmount = t / maxt;
             yield return new WaitForFixedUpdate();
         }
         yield return new WaitForFixedUpdate();

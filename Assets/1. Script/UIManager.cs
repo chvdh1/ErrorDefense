@@ -54,11 +54,11 @@ public class UIManager : MonoBehaviour
     private void Awake()
     {
         uIManager = this;
-        hp = transform.GetChild(0).gameObject.GetComponent<Image>();
-        exp = transform.GetChild(2).gameObject.GetComponent<Image>();
-        lvText = transform.GetChild(3).GetChild(0).gameObject.GetComponent<Text>();
-        expText = transform.GetChild(3).GetChild(1).gameObject.GetComponent<Text>();
-        hpText = transform.GetChild(4).gameObject.GetComponent<Text>();
+        hp = lvHp.transform.GetChild(0).gameObject.GetComponent<Image>();
+        exp = lvHp.transform.GetChild(2).gameObject.GetComponent<Image>();
+        lvText = lvHp.transform.GetChild(3).GetChild(0).gameObject.GetComponent<Text>();
+        expText = lvHp.transform.GetChild(3).GetChild(1).gameObject.GetComponent<Text>();
+        hpText = lvHp.transform.GetChild(4).gameObject.GetComponent<Text>();
         continuityText = continuity.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>();
         for (int i = 0; i < sBtn.Length; i++)
         {
@@ -95,17 +95,6 @@ public class UIManager : MonoBehaviour
         coinText.text = string.Format("{0}", gm.coin);
     }
 
-    public IEnumerator TimeUpdate(float t)
-    {
-        float i = t;
-        yield return new WaitForFixedUpdate();
-        while (t > 0)
-        {
-            timeBar.fillAmount = t / i;
-            yield return new WaitForFixedUpdate();
-        }
-       
-    }
     public IEnumerator NoCoin()
     {
         if (noText.color.a != 0)
@@ -142,6 +131,22 @@ public class UIManager : MonoBehaviour
             yield break;
 
         noText.text = "빈자리가 없습니다.";
+        noText.color = new Color(1, 1, 1, 1);
+        float c = 1;
+        while (noText.color.a > 0)
+        {
+            noText.color = new Color(1, 1, 1, c);
+            c -= 0.5f * Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    public IEnumerator NoSetPos()
+    {
+        if (noText.color.a != 0)
+            yield break;
+
+        noText.text = "설치할 수 없는 지역입니다.";
         noText.color = new Color(1, 1, 1, 1);
         float c = 1;
         while (noText.color.a > 0)

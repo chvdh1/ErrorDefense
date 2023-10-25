@@ -10,9 +10,9 @@ public class BtnManager : MonoBehaviour
     public static BtnManager Btn;
 
     public GameObject poolG;
-
+    public Transform manager;
     GameManager gm;
-    ShopManager sm;
+    public ShopManager sm;
     WaitingSeat ws;
     UIManager ui;
 
@@ -22,9 +22,8 @@ public class BtnManager : MonoBehaviour
     {
         Btn = this;
         gm = gameObject.GetComponent<GameManager>();
-        sm = ShopManager.shopManager;
-        ws = WaitingSeat.waitingSeat;
-        ui = UIManager.uIManager;
+        ws = gm.ws;
+        ui = manager.GetChild(0).gameObject.GetComponent<UIManager>();
         for (int i = 0; i < costObjs.Length; i++)
         {
             costObjs[i] = poolG.transform.GetChild(i+2).gameObject.GetComponent<PoolManager>();
@@ -35,6 +34,14 @@ public class BtnManager : MonoBehaviour
     {
         gm.mapIndex = 1;
         gm.GameStart();
+
+
+        int i = Random.Range(0, sm.cost1.Count);
+        Transform ch = costObjs[0].Get(i).transform;
+
+        Fire fi = ch.gameObject.GetComponent<Fire>();
+        fi.bulletPool = gm.bulletPool;
+        ch.position = ws.pos[0].transform.position;
     }
 
     public void BuyChamp()//Ã¨ÇÁ ±¸¸Å½Ã
@@ -44,9 +51,8 @@ public class BtnManager : MonoBehaviour
         bool full = false;
         for (int i = 0; i < 10; i++)
         {
-            if (i < 9 && ws.boolint[i] == 0)
+            if (i < 9 && ws.pos[i] == null)
             {
-                ws.boolint[i] = 1;
                 seatPosNum = i;
                 full = false;
                 break;
@@ -78,7 +84,9 @@ public class BtnManager : MonoBehaviour
         
         Fire fi = ch.gameObject.GetComponent<Fire>();
         fi.bulletPool = gm.bulletPool;
+        fi.seaNum = seatPosNum;
         ch.position = ws.pos[seatPosNum].transform.position;
+        ws.pos[seatPosNum] = ch.gameObject;
         cc.gameObject.SetActive(false);
     }
 

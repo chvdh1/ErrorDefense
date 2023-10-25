@@ -7,6 +7,9 @@ public class Fire : MonoBehaviour
     public PoolManager bulletPool;
     public Targeting layder;
 
+    //대기석의 번호
+    public int seaNum;
+
     public int dmg;
     public float coolTime;
     public float shootTime;

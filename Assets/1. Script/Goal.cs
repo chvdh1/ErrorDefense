@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class Goal : MonoBehaviour
 {
-    public GameManager gm;
+    public Transform manager; 
+    
+    GameManager gm;
     UIManager ui;
 
     private void Awake()
     {
-        gm = GameManager.Instance;
-        ui = UIManager.uIManager;
-
+        gm = manager.GetChild(1).gameObject.GetComponent<GameManager>();
+        ui = manager.GetChild(0).gameObject.GetComponent<UIManager>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

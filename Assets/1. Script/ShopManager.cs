@@ -36,7 +36,7 @@ public class ShopManager : MonoBehaviour
 {
     public static ShopManager shopManager;
 
-    List<ChampShop> cost1 = new List<ChampShop>();
+    public List<ChampShop> cost1 = new List<ChampShop>();
     List<ChampShop> cost2 = new List<ChampShop>();
     List<ChampShop> cost3 = new List<ChampShop>();
     List<ChampShop> cost4 = new List<ChampShop>();
@@ -192,7 +192,7 @@ public class ShopManager : MonoBehaviour
 
     public void Champ1Produce()
     {
-        int i = Random.Range(0, cost1.Count);
+        int i = Random.Range(0, cost1.Count-1);
         int num = cost1[i].cNum;
        
         Transform ch1 = costPool[0].Get(num).transform;
@@ -212,7 +212,7 @@ public class ShopManager : MonoBehaviour
 
     public void Champ2Produce()
     {
-        int i = Random.Range(0, cost2.Count);
+        int i = Random.Range(0, cost2.Count-1);
         int num = cost2[i].cNum;
         Transform ch2 = costPool[1].Get(num).transform;
         ch2.parent = transform; ;
@@ -227,7 +227,7 @@ public class ShopManager : MonoBehaviour
     }
     public void Champ3Produce()
     {
-        int i = Random.Range(0, cost3.Count);
+        int i = Random.Range(0, cost3.Count - 1);
         int num = cost3[i].cNum;
         Transform ch3 = costPool[2].Get(num).transform;
         ch3.parent = transform;
@@ -242,7 +242,7 @@ public class ShopManager : MonoBehaviour
     }
     public void Champ4Produce()
     {
-        int i = Random.Range(0, cost4.Count);
+        int i = Random.Range(0, cost4.Count - 1);
         int num = cost4[i].cNum;
         Transform ch4 = costPool[3].Get(num).transform;
         ch4.parent = transform;
@@ -257,7 +257,7 @@ public class ShopManager : MonoBehaviour
     }
     public void Champ5Produce()
     {
-        int i = Random.Range(0, cost5.Count);
+        int i = Random.Range(0, cost5.Count -1);
         int num = cost5[i].cNum;
         Transform ch5 = costPool[4].Get(num).transform;
         ch5.parent = transform;
