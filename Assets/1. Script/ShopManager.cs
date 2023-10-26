@@ -48,7 +48,7 @@ public class ShopManager : MonoBehaviour
     public GameObject pools;
     public PoolManager[] costPool = new PoolManager[5];
 
-    GameObject[] cells = new GameObject[5];
+    public GameObject[] cells = new GameObject[5];
     private void Awake()
     {
         shopManager = this;
@@ -192,16 +192,19 @@ public class ShopManager : MonoBehaviour
 
     public void Champ1Produce()
     {
-        int i = Random.Range(0, cost1.Count-1);
+        int i = Random.Range(0, cost1.Count);
         int num = cost1[i].cNum;
        
         Transform ch1 = costPool[0].Get(num).transform;
-        ch1.parent = transform;
+        ch1.SetParent(transform);
 
         for (int c = 0; c < cells.Length; c++)
         {
             if (cells[c] == null)
+            {
                 cells[c] = ch1.gameObject;
+                break;
+            }
         }
         
 
@@ -212,14 +215,17 @@ public class ShopManager : MonoBehaviour
 
     public void Champ2Produce()
     {
-        int i = Random.Range(0, cost2.Count-1);
+        int i = Random.Range(0, cost2.Count);
         int num = cost2[i].cNum;
         Transform ch2 = costPool[1].Get(num).transform;
-        ch2.parent = transform; ;
+        ch2.SetParent(transform);
         for (int c = 0; c < cells.Length; c++)
         {
             if (cells[c] == null)
+            {
                 cells[c] = ch2.gameObject;
+                break;
+            }
         }
         cost2[i].cCount++;
         if (cost2[i].cCount >= cost2[i].cMax)
@@ -227,14 +233,17 @@ public class ShopManager : MonoBehaviour
     }
     public void Champ3Produce()
     {
-        int i = Random.Range(0, cost3.Count - 1);
+        int i = Random.Range(0, cost3.Count);
         int num = cost3[i].cNum;
         Transform ch3 = costPool[2].Get(num).transform;
-        ch3.parent = transform;
+        ch3.SetParent(transform);
         for (int c = 0; c < cells.Length; c++)
         {
             if (cells[c] == null)
+            {
                 cells[c] = ch3.gameObject;
+                break;
+            }
         }
         cost3[i].cCount++;
         if (cost3[i].cCount >= cost3[i].cMax)
@@ -242,14 +251,17 @@ public class ShopManager : MonoBehaviour
     }
     public void Champ4Produce()
     {
-        int i = Random.Range(0, cost4.Count - 1);
+        int i = Random.Range(0, cost4.Count);
         int num = cost4[i].cNum;
         Transform ch4 = costPool[3].Get(num).transform;
-        ch4.parent = transform;
+        ch4.SetParent(transform);
         for (int c = 0; c < cells.Length; c++)
         {
             if (cells[c] == null)
+            {
                 cells[c] = ch4.gameObject;
+                break;
+            }
         }
         cost4[i].cCount++;
         if (cost4[i].cCount >= cost4[i].cMax)
@@ -257,14 +269,17 @@ public class ShopManager : MonoBehaviour
     }
     public void Champ5Produce()
     {
-        int i = Random.Range(0, cost5.Count -1);
+        int i = Random.Range(0, cost5.Count);
         int num = cost5[i].cNum;
         Transform ch5 = costPool[4].Get(num).transform;
-        ch5.parent = transform;
+        ch5.SetParent(transform);
         for (int c = 0; c < cells.Length; c++)
         {
             if (cells[c] == null)
+            {
                 cells[c] = ch5.gameObject;
+                break;
+            }
         }
         cost5[i].cCount++;
         if (cost5[i].cCount >= cost5[i].cMax)

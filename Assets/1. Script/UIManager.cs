@@ -70,23 +70,27 @@ public class UIManager : MonoBehaviour
 
     public void HpUpdate()
     {
-        hp.fillAmount = gm.hp / gm.maxHp;
-        hpText.text = string.Format("{0} / {1}", gm.hp, gm.maxHp);
+        float a = gm.hp / gm.maxHp;
+        Debug.Log(a);
+        hp.fillAmount = a;
+        hpText.text = string.Format("{0}", gm.hp);
     }
 
     public void ExpUpdate()
     {
         
-        if (gm.exp > gm.maxExp[gm.lv])
+        if (gm.exp >= gm.maxExp[gm.lv])
         {
-            int reExp = gm.exp - gm.maxExp[gm.lv];
+            float reExp = gm.exp - gm.maxExp[gm.lv];
             gm.exp = 0;
 
             gm.lv++;
             gm.exp += reExp;
             lvText.text = string.Format("{0}", gm.lv);
         }
-        exp.fillAmount = gm.exp / gm.maxExp[gm.lv];
+        float a = gm.exp / gm.maxExp[gm.lv];
+        Debug.Log(a);
+        exp.fillAmount = a;
         expText.text = string.Format("{0} / {1}", gm.exp, gm.maxExp[gm.lv]);
     }
 

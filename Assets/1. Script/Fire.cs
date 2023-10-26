@@ -7,6 +7,7 @@ public class Fire : MonoBehaviour
     public PoolManager bulletPool;
     public Targeting layder;
 
+    public bool inField;
     //대기석의 번호
     public int seaNum;
 
@@ -16,6 +17,9 @@ public class Fire : MonoBehaviour
 
     private void Update()
     {
+        if (!inField)
+            return;
+
         if (shootTime > 0)
             shootTime -= Time.deltaTime;
         else

@@ -31,10 +31,13 @@ public class PlBullet : MonoBehaviour
             Debug.Log("hlt");
             es.hp -= dmg;
 
-            if (es.hp < 0)
+            if (es.hp <= 0)
+            {
                 collision.gameObject.SetActive(false);
+                GameManager.curEnemy++;
+            }
+              
             gameObject.SetActive(false);
-            GameManager.curEnemy++;
         }
     }
 }

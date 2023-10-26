@@ -19,11 +19,11 @@ public class GameManager : MonoBehaviour
 
     public GameObject[] fieldUnit=new GameObject[15];
 
-    public int maxHp;
-    public int hp;
+    public float maxHp;
+    public float hp;
 
-    public int[] maxExp;
-    public int exp;
+    public float[] maxExp;
+    public float exp;
     public int coin;
     public int continuity; // 연승패 코인
     public int champBlank;
@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
 
     public static Action gameover;
 
-    public static int gamestat; // 0 = 로비 , 1 게임 진행 , 
+    public int gamestat; // 0 = 로비 , 1 게임 진행 , 2 전투중
 
 
     //스테이지 관련 변수
@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     public GameObject noSetP;
     GameObject[] noSet;
     int stageIndex;
+    public bool passEnemy;
 
     public static int totalEnemy;
     public static int curEnemy;
@@ -78,14 +79,18 @@ public class GameManager : MonoBehaviour
     public void GameStart()
     {
         //최대체력으로 시작
+        maxHp = 100;
         hp = maxHp;
         lv = 1;
         coin = 0;
         exp = 0;
+        ui.CoinUpdate();
+        ui.ExpUpdate();
+        ui.ContinuityUpdate();
 
         //스테이지 초기화
         stageIndex = 1;
-       
+        passEnemy = false;
 
         //지정 맵 소환, 그외 비활성화
         for (int i = 0; i < noSet.Length; i++)
@@ -102,8 +107,9 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        //시너지 초기화
+        //시너지 초기화 및 챔프 리스트 초기화
         ui.SynergyReset();
+        sm.ChampReset();
 
         //적 무브포인트 인지
         int count = mapPointParent[mapIndex-1].transform.childCount;
@@ -129,6 +135,17 @@ public class GameManager : MonoBehaviour
         float t = stageIndex == 1 ? 5 : 10;
         float maxt = t;
 
+        //전투중 필드 유닛 상태변화(이동제한을 위해)
+        gamestat = 1;
+        for (int i = 0; i < fieldUnit.Length; i++)
+        {
+            if (fieldUnit[i] != null)
+            {
+                Fire fi = fieldUnit[i].GetComponent<Fire>();
+                fi.inField = false;
+                yield return new WaitForFixedUpdate();
+            }
+        }
         yield return new WaitForFixedUpdate();
         while(t>0)
         {
@@ -146,7 +163,23 @@ public class GameManager : MonoBehaviour
         int enemySpawnindex = stageIndex + 2;
         int enemytype = 1;
         int enemytypeMin = 0;
-        
+    
+        passEnemy = false;
+        curEnemy = 0;
+
+        //전투중 필드 유닛 상태변화(이동제한을 위해)
+        gamestat = 2;
+        for (int i = 0; i < fieldUnit.Length; i++)
+        {
+            if (fieldUnit[i] != null)
+            {
+                Fire fi = fieldUnit[i].GetComponent<Fire>();
+                fi.inField = true;
+                yield return new WaitForFixedUpdate();
+            }
+        }
+
+
         switch (stageIndex)
         {
             case < 5:
@@ -204,9 +237,50 @@ public class GameManager : MonoBehaviour
         totalEnemy = enemySpawnindex;
         while(totalEnemy != curEnemy)
         {
+            Debug.Log(totalEnemy + " /" + curEnemy);
             yield return new WaitForSeconds(1);
         }
 
+        //스테이지 끝!
+       
+        if (!passEnemy)
+        {
+            coin++;
+            continuity = continuity > 0 ? continuity++ : 1;
+        } // 승리 및 연승패 코인 보너스
+        else
+        {
+            continuity = continuity < 0 ? continuity-- : -1;
+        }
+           
+        switch(coin)
+        {
+            case < 10:
+                coin += 0;
+                break;
+            case < 20:
+                coin += 1;
+                break;
+            case < 30:
+                coin += 2;
+                break;
+            case < 40:
+                coin += 3;
+                break;
+            case < 50:
+                coin += 4;
+                break;
+            case >= 50:
+                coin += 5;
+                break;
+        } //이자 수익
+        coin += stageIndex < 5 ? stageIndex+1 : 5;//기본 수익
+
+        exp += 2;
+
+        ui.CoinUpdate();
+        ui.ExpUpdate();
+        ui.ContinuityUpdate();
         Reroll();
         stageIndex ++;
         StartCoroutine(DelayTime());

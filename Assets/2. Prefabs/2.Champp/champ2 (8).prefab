@@ -206,7 +206,7 @@ MonoBehaviour:
   bulletPool: {fileID: 0}
   layder: {fileID: 5376947899632328301}
   seaNum: 0
-  dmg: 0
+  dmg: 5
   coolTime: 1
   shootTime: 0
 --- !u!50 &5269467735373681838

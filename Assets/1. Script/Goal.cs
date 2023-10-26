@@ -21,11 +21,11 @@ public class Goal : MonoBehaviour
         {
             EnemyStat es = collision.gameObject.GetComponent<EnemyStat>();
             gm.hp -= es.dmg;
-
+            GameManager.curEnemy++;
             collision.gameObject.SetActive(false);
-
+            gm.passEnemy = true;
             ui.HpUpdate();
-            if (gm.hp < 0)
+            if (gm.hp <= 0)
                 GameManager.gameover();
         }
     }

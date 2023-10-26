@@ -41,6 +41,7 @@ public class BtnManager : MonoBehaviour
 
         Fire fi = ch.gameObject.GetComponent<Fire>();
         fi.bulletPool = gm.bulletPool;
+        ws.obj[0] = ch.gameObject;
         ch.position = ws.pos[0].transform.position;
     }
 
@@ -51,7 +52,7 @@ public class BtnManager : MonoBehaviour
         bool full = false;
         for (int i = 0; i < 10; i++)
         {
-            if (i < 9 && ws.pos[i] == null)
+            if (i < 9 && ws.obj[i] == null)
             {
                 seatPosNum = i;
                 full = false;
@@ -86,7 +87,7 @@ public class BtnManager : MonoBehaviour
         fi.bulletPool = gm.bulletPool;
         fi.seaNum = seatPosNum;
         ch.position = ws.pos[seatPosNum].transform.position;
-        ws.pos[seatPosNum] = ch.gameObject;
+        ws.obj[seatPosNum] = ch.gameObject;
         cc.gameObject.SetActive(false);
     }
 
