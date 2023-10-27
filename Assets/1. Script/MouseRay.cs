@@ -86,6 +86,7 @@ public class MouseRay : MonoBehaviour
             {
                 if (hit.transform.gameObject.layer == 10) //설치 불가지역
                 {
+                    Debug.Log("필드 유닛 설치 불가지역");
                     dragChamp.transform.position = beforeVec;
                     ui.StartCoroutine(ui.NoSetPos());
                 }
@@ -101,9 +102,14 @@ public class MouseRay : MonoBehaviour
                         }
                     }
                     if(s == -1)//빈자리 없으면 이전 위치로
+                    {
+                        Debug.Log("필드 유닛 빈 자리가 없음!");
                         dragChamp.transform.position = beforeVec;
+                    }
+                       
                     else//대기석으로 이동
                     {
+                        Debug.Log("필드 유닛 대기석으로");
                         ws.obj[s] = dragChamp;
                         fi.seaNum = s;
                         dragChamp.transform.position = ws.pos[s].transform.position;
@@ -112,6 +118,7 @@ public class MouseRay : MonoBehaviour
                             if (dragChamp == gm.fieldUnit[i])
                             {
                                 gm.fieldUnit[i] = null;
+                                fi.inField = false;
                                 break;
                             }
                         }
@@ -119,7 +126,10 @@ public class MouseRay : MonoBehaviour
                     }
                 }
                 else
+                {
+                    Debug.Log("필드 유닛 이동완료");
                     dragChamp.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + setVec;
+                }
             }
         }
         else //대기석 유닛의 이동(배틀 중 X)

@@ -20,12 +20,6 @@ public class SynergyInfo
         sStep = step;
         sSNum = num;
     }
-    public void PrintInfo()
-    {
-        string str = string.Format("이름({0}) 수량({1}) 단계({2}) 넘버({3})",
-                                    sName, sCount, sStep, sSNum);
-        Debug.Log(str);
-    }
 }
 
 
@@ -89,7 +83,6 @@ public class UIManager : MonoBehaviour
             lvText.text = string.Format("{0}", gm.lv);
         }
         float a = gm.exp / gm.maxExp[gm.lv];
-        Debug.Log(a);
         exp.fillAmount = a;
         expText.text = string.Format("{0} / {1}", gm.exp, gm.maxExp[gm.lv]);
     }
@@ -101,7 +94,7 @@ public class UIManager : MonoBehaviour
 
     public IEnumerator NoCoin()
     {
-        if (noText.color.a != 0)
+        if (noText.color.a > 0.1f)
             yield break;
 
         noText.text = "코인이 부족합니다.";
@@ -116,9 +109,8 @@ public class UIManager : MonoBehaviour
     }
     public IEnumerator NoWaitingSeat()
     {
-        if (noText.color.a != 0)
+        if (noText.color.a > 0.1f)
             yield break;
-
         noText.text = "대기석에 자리가 없습니다.";
         noText.color = new Color(1, 1, 1, 1);
         float c = 1;
@@ -131,7 +123,7 @@ public class UIManager : MonoBehaviour
     }
     public IEnumerator NoEmptySeats()
     {
-        if (noText.color.a != 0)
+        if (noText.color.a > 0.1f)
             yield break;
 
         noText.text = "빈자리가 없습니다.";
@@ -147,7 +139,7 @@ public class UIManager : MonoBehaviour
 
     public IEnumerator NoSetPos()
     {
-        if (noText.color.a != 0)
+        if (noText.color.a > 0.1f)
             yield break;
 
         noText.text = "설치할 수 없는 지역입니다.";
@@ -190,10 +182,6 @@ public class UIManager : MonoBehaviour
         synergyInfos.Add(node);
         node = new SynergyInfo("프로토타이핑", 0, 0,7);
         synergyInfos.Add(node);
-        for (int i = 0; i < synergyInfos.Count; i++)
-        {
-            synergyInfos[i].PrintInfo();
-        }
     }
    
     int stepDESC(SynergyInfo a, SynergyInfo b) //DESC : 내림차순정렬(높은 순에서 낮은 순으로 정렬)

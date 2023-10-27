@@ -84,10 +84,6 @@ public class ShopManager : MonoBehaviour
         cost1.Add(node);
         node = new ChampShop("18", 0,  20,7, 1);
         cost1.Add(node);
-        for (int i = 0; i < cost1.Count; i++)
-        {
-            cost1[i].PrintInfo();
-        }
 
         // 2코스트 초기화
         ChampShop node2 = new ChampShop("21", 0,  20, 0, 2);
@@ -106,10 +102,6 @@ public class ShopManager : MonoBehaviour
         cost2.Add(node2);
         node2 = new ChampShop("28", 0,  20,7, 2);
         cost2.Add(node2);
-        for (int i = 0; i < cost2.Count; i++)
-        {
-            cost2[i].PrintInfo();
-        }
 
         // 3코스트 초기화
         ChampShop node3 = new ChampShop("31", 0, 18, 0, 3);
@@ -128,10 +120,6 @@ public class ShopManager : MonoBehaviour
         cost3.Add(node3);
         node3 = new ChampShop("38", 0, 18,7, 3);
         cost3.Add(node3);
-        for (int i = 0; i < cost3.Count; i++)
-        {
-            cost3[i].PrintInfo();
-        }
 
         // 4코스트 초기화
         ChampShop node4 = new ChampShop("41", 0, 12,0, 4);
@@ -150,10 +138,6 @@ public class ShopManager : MonoBehaviour
         cost4.Add(node4);
         node4 = new ChampShop("48", 0, 12,7, 4);
         cost4.Add(node4);
-        for (int i = 0; i < cost4.Count; i++)
-        {
-            cost4[i].PrintInfo();
-        }
 
         // 5코스트 초기화
         ChampShop node5 = new ChampShop("51", 0, 9,0, 5);
@@ -172,10 +156,6 @@ public class ShopManager : MonoBehaviour
         cost5.Add(node5);
         node5 = new ChampShop("58", 0, 9,7, 5);
         cost5.Add(node5);
-        for (int i = 0; i < cost5.Count; i++)
-        {
-            cost5[i].PrintInfo();
-        }
     }
     public void DelCards()
     {

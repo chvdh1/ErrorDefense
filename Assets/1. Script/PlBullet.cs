@@ -28,7 +28,6 @@ public class PlBullet : MonoBehaviour
         {
             EnemyStat es = collision.gameObject.GetComponent<EnemyStat>();
 
-            Debug.Log("hlt");
             es.hp -= dmg;
 
             if (es.hp <= 0)

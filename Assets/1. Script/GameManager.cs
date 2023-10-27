@@ -235,7 +235,7 @@ public class GameManager : MonoBehaviour
 
         //스테이지 끝 확인
         totalEnemy = enemySpawnindex;
-        while(totalEnemy != curEnemy)
+        while(totalEnemy > curEnemy)
         {
             Debug.Log(totalEnemy + " /" + curEnemy);
             yield return new WaitForSeconds(1);
