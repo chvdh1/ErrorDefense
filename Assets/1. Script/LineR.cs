@@ -7,17 +7,20 @@ public class LineR : MonoBehaviour
     public GameManager gm;
     LineRenderer lr;
     public GameObject[] points;
+    public int num;
     private void Awake()
     {
         lr = GetComponent<LineRenderer>();
 
-        points = new GameObject[transform.childCount+1];
-        lr.positionCount = points.Length+1;
+        points = new GameObject[transform.childCount+2];
+        lr.positionCount = points.Length;
 
-        for (int i = 0; i <= points.Length; i++)
+        for (int i = 0; i < points.Length; i++)
         {
-            if (i < points.Length)
-                points[i] = transform.GetChild(i).gameObject;
+            if(i==0)
+                points[i] = gm.spawnPos[num].gameObject;
+            else if (i < points.Length-1)
+                points[i] = transform.GetChild(i-1).gameObject;
             else
                 points[i] = gm.goal;
         }

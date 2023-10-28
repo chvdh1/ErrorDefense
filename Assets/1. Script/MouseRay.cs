@@ -11,7 +11,7 @@ public class MouseRay : MonoBehaviour
     public WaitingSeat ws;
     public UIManager ui;
 
-    Vector2 defultVec = new Vector2(0, 0.5f);
+    public Vector2 defultVec = new Vector2(0, 1);
     Vector3 setVec = new Vector3(0, 0,10);
     Vector2 beforeVec;
 
@@ -78,12 +78,13 @@ public class MouseRay : MonoBehaviour
         Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
 
-       
+        
         Fire fi = dragChamp.GetComponent<Fire>();
         if (fi.inField) //필드 유닛의 이동(배틀 중 X)
         {
             if (hit.collider != null)
             {
+                Debug.Log(hit.collider.gameObject);
                 if (hit.transform.gameObject.layer == 10) //설치 불가지역
                 {
                     Debug.Log("필드 유닛 설치 불가지역");

@@ -251,6 +251,7 @@ public class GameManager : MonoBehaviour
         else
         {
             continuity = continuity < 0 ? continuity-- : -1;
+            hp -= stageIndex;
         }
            
         switch(coin)
