@@ -5,9 +5,15 @@ using UnityEngine;
 public class Targeting : MonoBehaviour
 {
     public float scanRange;
+    public float defScanRange;
     public LayerMask targetLayer;
     public RaycastHit2D[] targets;
     public Transform nearestTarget;
+
+    private void OnEnable()
+    {
+        scanRange = defScanRange + SynergyManager.sDistance;
+    }
 
     private void FixedUpdate()
     {

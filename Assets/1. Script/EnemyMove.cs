@@ -6,21 +6,32 @@ public class EnemyMove : MonoBehaviour
 {
     public GameObject goal;
 
+    public float defmoveSpeed;
     public float moveSpeed;
 
     public Transform[] movePoint;
     public int movePointIndex;
 
     public bool fly;
+    public bool slow;
 
 
     private void OnEnable()
     {
         movePointIndex = 0;
+        slow = false;
+        moveSpeed = defmoveSpeed;
     }
     private void Update()
     {
         MovePath();
+    }
+
+    public void SlowE(float sl , float slX)
+    {
+        slow = true;
+        float ck = defmoveSpeed - sl! > 0.2f ? 0.2f : defmoveSpeed - sl;
+        moveSpeed = (ck - sl) * (1 - (slX / 100));
     }
 
     void MovePath()
@@ -31,9 +42,11 @@ public class EnemyMove : MonoBehaviour
 
         if (!fly)
         {
-            transform.position =
-           Vector2.MoveTowards(transform.position,
-           movePoint[movePointIndex].position, moveSpeed * Time.deltaTime);
+                transform.position =
+          Vector2.MoveTowards(transform.position,
+          movePoint[movePointIndex].position, moveSpeed * Time.deltaTime);
+
+
 
             if (transform.position == movePoint[movePointIndex].position)
                 movePointIndex++;

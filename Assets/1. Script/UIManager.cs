@@ -10,13 +10,21 @@ public class SynergyInfo
 {
     public string sName = "";
     public int sCount = 0;
+    public int sStep1 = 0;
+    public int sStep2 = 0;
+    public int sStep3 = 0;
+    public int sStep4 = 0;
     public int sStep = 0;
     public int sSNum = 0;
 
-    public SynergyInfo(string Name, int count, int step, int num)
+    public SynergyInfo(string Name, int count, int step1, int step2, int step3, int step4, int step, int num)
     {
         sName = Name;
         sCount = count;
+        sStep1 = step1;
+        sStep2 = step2;
+        sStep3 = step3;
+        sStep4 = step4;
         sStep = step;
         sSNum = num;
     }
@@ -166,33 +174,61 @@ public class UIManager : MonoBehaviour
 
     public void SynergyReset()
     {
-        SynergyInfo node = new SynergyInfo("백신", 0, 0,0);
+        SynergyInfo node = new SynergyInfo("백신", 0, 2, 4, 6, 8,0, 1);
         synergyInfos.Add(node);
-        node = new SynergyInfo("침착", 0, 0,1);
+        node = new SynergyInfo("침착", 0, 2, 4, 6, 8, 0, 2);
         synergyInfos.Add(node);
-        node = new SynergyInfo("신중", 0, 0,2);
+        node = new SynergyInfo("신중", 0, 2, 4, 6, 8, 0, 3);
         synergyInfos.Add(node);
-        node = new SynergyInfo("속기", 0, 0,3);
+        node = new SynergyInfo("속기", 0, 2, 4, 6, 8, 0, 4);
         synergyInfos.Add(node);
-        node = new SynergyInfo("침착", 0, 0,4);
+        node = new SynergyInfo("행운", 0, 2, 4, 6, 8, 0, 5);
         synergyInfos.Add(node);
-        node = new SynergyInfo("생각", 0, 0,5);
+        node = new SynergyInfo("생각", 0, 2, 4, 6, 8, 0, 6);
         synergyInfos.Add(node);
-        node = new SynergyInfo("디자인", 0, 0,6);
+        node = new SynergyInfo("디자인", 0, 2, 4, 6, 8, 0, 7);
         synergyInfos.Add(node);
-        node = new SynergyInfo("프로토타이핑", 0, 0,7);
+        node = new SynergyInfo("프로토타이핑", 0, 2, 4, 6, 8, 0, 8);
         synergyInfos.Add(node);
     }
-   
+
+
+    int countDESC(SynergyInfo a, SynergyInfo b) //DESC : 내림차순정렬(높은 순에서 낮은 순으로 정렬)
+    {
+        return b.sCount.CompareTo(a.sCount);
+    }
+
     int stepDESC(SynergyInfo a, SynergyInfo b) //DESC : 내림차순정렬(높은 순에서 낮은 순으로 정렬)
     {
         return b.sStep.CompareTo(a.sStep);
     }
 
+    Color c0 = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+    Color c1 = new Color(0.8f,0.8f,0.8f,1);
+    Color c2 = new Color(0.8f, 0.5f, 0.3f, 1);
+    Color c3 = new Color(0.95f, 0.95f, 0.95f, 1);
+    Color c4 = new Color(1, 1, 0.5f, 1);
+
     public void SynergyUpdate()
     {
+        //게임매니저가 가지고 있는 시너지 스택을 리스트에 추가
+        //시너지 단계 최신화
+        for (int i = 0; i < synergyInfos.Count; i++)
+        {
+            synergyInfos[i].sCount = gm.synergy[i + 1];
+            synergyInfos[i].sStep = synergyInfos[i].sStep >= synergyInfos[i].sStep4 ? 4 :
+                synergyInfos[i].sStep >= synergyInfos[i].sStep3 ? 3 :
+                synergyInfos[i].sStep >= synergyInfos[i].sStep2 ? 2 :
+                synergyInfos[i].sStep >= synergyInfos[i].sStep1 ? 1 : 0;
+        }
+
+        //시너지 카운트가 높은 순서에 따라 정렬
+        synergyInfos.Sort(countDESC);
+
         //활성화 된 시너지 중 높은 단계 순으로 정렬
         synergyInfos.Sort(stepDESC);//Sort : 리스트 정렬 함수
+
+
 
         //정령된 리스트의 순서에 따라 하이라이키 변경
         for (int i = synergyInfos.Count-1; i >= 0; i--)
@@ -200,14 +236,218 @@ public class UIManager : MonoBehaviour
             sBtn[i].transform.SetSiblingIndex(i);
         }
 
-        //하나라도 가지고 있는 시너지 시각화
+        //하나라도 가지고 있는 시너지 시각화 및 단계에 맞게 색상 변화
         for (int i = 0; i < synergyInfos.Count; i++)
         {
             if (synergyInfos[i].sCount > 0)
+            {
                 sBtn[i].SetActive(true);
-            
+                Image im = sBtn[i].GetComponent<Image>();
+                im.color = synergyInfos[i].sStep == 4 ? c4 :
+                    synergyInfos[i].sStep == 3 ? c3 :
+                    synergyInfos[i].sStep == 2 ? c2 :
+                    synergyInfos[i].sStep == 1 ? c1 : c0;
+            }
             else
                 sBtn[i].SetActive(false);
+        }
+
+
+        //각 시너지에 맞는 효과 발동
+        SynergyE();
+       
+    }
+    public void SynergyE()
+    {
+        switch (synergyInfos[0].sStep) //0 백신(둔화 + 체력 회복)
+        {
+            //fl sl =  (speed-slow) <= 0 ? 0.1f : speed-slow;
+            //fl S = (speed-slow) * t * (1 - ( slowX / 100))
+            case 0:
+                SynergyManager.slow = 0;
+                SynergyManager.heal = 0;
+                break;
+            case 1:
+                SynergyManager.slow = 1;
+                SynergyManager.heal = 1;
+                break;
+            case 2:
+                SynergyManager.slow = 1;
+                SynergyManager.heal = 2;
+                break;
+            case 3:
+                SynergyManager.slow = 2;
+                SynergyManager.heal = 2;
+                break;
+            case 4:
+                SynergyManager.slow = 3;
+                SynergyManager.heal = 3;
+                break;
+        }
+        switch (synergyInfos[1].sStep)   //침착(사거리 +)
+        {
+            case 0:
+                SynergyManager.sDistance = 0;
+                break;
+            case 1:
+                SynergyManager.sDistance = 1;
+                break;
+            case 2:
+                SynergyManager.sDistance = 2;
+                break;
+            case 3:
+                SynergyManager.sDistance = 3;
+                break;
+            case 4:
+                SynergyManager.sDistance = 5;
+                break;
+        }
+        switch (synergyInfos[2].sStep)   //신중(데미지)
+        {
+            //fl dmgs = (dmg + pDmg) *  pDmgX/100;
+            case 0:
+                SynergyManager.pDmg = 0;
+                break;
+            case 1:
+                SynergyManager.pDmg = 1;
+                break;
+            case 2:
+                SynergyManager.pDmg = 3;
+                break;
+            case 3:
+                SynergyManager.pDmg = 5;
+                break;
+            case 4:
+                SynergyManager.pDmg = 10;
+                break;
+        }
+        switch (synergyInfos[3].sStep)   //속기(공속 + 탄속 +)
+        {
+            case 0:
+                SynergyManager.sSpeed = 0;
+                SynergyManager.attspeed = 0;
+                break;
+            case 1:
+                SynergyManager.sSpeed = 1;
+                SynergyManager.attspeed = 20;
+                break;
+            case 2:
+                SynergyManager.sSpeed = 2;
+                SynergyManager.attspeed = 35;
+                break;
+            case 3:
+                SynergyManager.sSpeed = 3;
+                SynergyManager.attspeed = 55;
+                break;
+            case 4:
+                SynergyManager.sSpeed = 5;
+                SynergyManager.attspeed = 95;
+                break;
+        }
+
+
+        switch (synergyInfos[4].sStep)   //행운(치명타 확률, 댐지+)
+        {
+            case 0:
+                SynergyManager.criPer = 0;
+                SynergyManager.criDmg = 0;
+                break;
+            case 1:
+                SynergyManager.criPer = 10;
+                SynergyManager.criDmg = 10;
+                break;
+            case 2:
+                SynergyManager.criPer = 20;
+                SynergyManager.criDmg = 20;
+                break;
+            case 3:
+                SynergyManager.criPer = 30;
+                SynergyManager.criDmg = 35;
+                break;
+            case 4:
+                SynergyManager.criPer = 45;
+                SynergyManager.criDmg = 65;
+                break;
+        }
+        switch (synergyInfos[5].sStep)   //생각(둔화 + 체력 회복 *)
+        {
+            //fl sl =  (speed-slow) <= 0 ? 0.1f : speed-slow;
+            //fl S = (speed-slow) * t * (1 - ( slowX / 100))
+            //fl H = heal + (heal * healX)
+            case 0:
+                SynergyManager.slowX = 0;
+                SynergyManager.healX = 0;
+                break;
+            case 1:
+                SynergyManager.slowX = 10;
+                SynergyManager.healX = 20;
+                break;
+            case 2:
+                SynergyManager.slowX = 20;
+                SynergyManager.healX = 30;
+                break;
+            case 3:
+                SynergyManager.slowX = 30;
+                SynergyManager.healX = 50;
+                break;
+            case 4:
+                SynergyManager.slowX = 50;
+                SynergyManager.healX = 100;
+                break;
+        }
+        switch (synergyInfos[6].sStep)   //디자인(초당 전체 데미지)
+        {
+            case 0:
+                SynergyManager.allAttdmg = 0;
+                break;
+            case 1:
+                SynergyManager.allAttdmg = 2;
+                break;
+            case 2:
+                SynergyManager.allAttdmg = 4;
+                break;
+            case 3:
+                SynergyManager.allAttdmg = 7;
+                break;
+            case 4:
+                SynergyManager.allAttdmg = 15;
+                break;
+        }
+        switch (synergyInfos[7].sStep)   //프로토타이핑(데미지 x )
+        {
+            //fl dmgs = (dmg + pDmg) *  pDmgX/100;
+            case 0:
+                SynergyManager.pDmgX = 100;
+                break;
+            case 1:
+                SynergyManager.pDmgX = 110;
+                break;
+            case 2:
+                SynergyManager.pDmgX = 130;
+                break;
+            case 3:
+                SynergyManager.pDmgX = 150;
+                break;
+            case 4:
+                SynergyManager.pDmgX = 250;
+                break;
+        }
+
+
+        //필드 유닛들에게 적용
+        for (int i = 0; i < gm.fieldUnit.Length; i++)
+        {
+            if (gm.fieldUnit[i] != null)
+            {
+                Targeting tt = gm.fieldUnit[i].GetComponent<Targeting>();
+                tt.scanRange = tt.defScanRange + SynergyManager.sDistance;
+                Fire fi = gm.fieldUnit[i].GetComponent<Fire>();
+                fi.dmg = (fi.defDmg[fi.lv] + SynergyManager.pDmg) * SynergyManager.pDmgX / 100;
+                fi.shootTime = (fi.defShootTime + SynergyManager.attspeed);
+                fi.shootSpeed = (fi.defShootSpeed + SynergyManager.sSpeed);
+                fi.criPer = (fi.defCriPer + SynergyManager.criPer);
+                fi.criDmg = (fi.defCriDmg + SynergyManager.criDmg);
+            }
         }
     }
 }

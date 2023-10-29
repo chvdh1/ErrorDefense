@@ -265,6 +265,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7901437757268417404}
   - component: {fileID: 4528095508580610785}
+  - component: {fileID: -3212892226425027421}
   - component: {fileID: 1753423782862081518}
   - component: {fileID: 8129080932441916104}
   - component: {fileID: 2220499724024668738}
@@ -346,6 +347,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-3212892226425027421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6856212632390184602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49bbf824d794efd4cb0335bee27480d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  synergy: 010000000200000003000000
 --- !u!114 &1753423782862081518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,6 +373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scanRange: 3
+  defScanRange: 3
   targetLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -379,9 +394,20 @@ MonoBehaviour:
   layder: {fileID: 1753423782862081518}
   inField: 0
   seaNum: 0
-  dmg: 5
-  coolTime: 1
+  lv: 0
+  defDmg:
+  - 5
+  - 10
+  - 25
+  defShootTime: 1.2
+  defShootSpeed: 2
+  defCriPer: 20
+  defCriDmg: 0
+  dmg: 0
   shootTime: 0
+  shootSpeed: 0
+  criPer: 0
+  criDmg: 0
 --- !u!50 &2220499724024668738
 Rigidbody2D:
   serializedVersion: 4

@@ -33,16 +33,7 @@ public class BtnManager : MonoBehaviour
     public void StageOneBtn()
     {
         gm.mapIndex = 1;
-        gm.GameStart();
-
-
-        int i = Random.Range(0, sm.cost1.Count);
-        Transform ch = costObjs[0].Get(i).transform;
-
-        Fire fi = ch.gameObject.GetComponent<Fire>();
-        fi.bulletPool = gm.bulletPool;
-        ws.obj[0] = ch.gameObject;
-        ch.position = ws.pos[0].transform.position;
+        gm.GameStart();       
     }
 
     public void BuyChamp()//Ã¨ÇÁ ±¸¸Å½Ã

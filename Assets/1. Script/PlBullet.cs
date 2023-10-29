@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class PlBullet : MonoBehaviour
 {
-    public int dmg;
+    public float dmg;
     public float shootSpeed;
     public Transform targetEnemy;
+    public bool cri;
 
     private void Update()
     {
@@ -35,7 +36,15 @@ public class PlBullet : MonoBehaviour
                 collision.gameObject.SetActive(false);
                 GameManager.curEnemy++;
             }
-              
+
+            float slowran = Random.Range(0, 100);
+            if(slowran < 45)
+            {
+                EnemyMove em = collision.gameObject.GetComponent<EnemyMove>();
+                if (!em.slow)
+                    em.SlowE(SynergyManager.slow, SynergyManager.slowX);
+            }
+
             gameObject.SetActive(false);
         }
     }

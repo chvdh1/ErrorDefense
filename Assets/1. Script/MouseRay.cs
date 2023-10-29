@@ -104,7 +104,7 @@ public class MouseRay : MonoBehaviour
                     }
                     if(s == -1)//빈자리 없으면 이전 위치로
                     {
-                        Debug.Log("필드 유닛 빈 자리가 없음!");
+                        Debug.Log("대기석 빈 자리가 없음!");
                         dragChamp.transform.position = beforeVec;
                     }
                        
@@ -124,13 +124,14 @@ public class MouseRay : MonoBehaviour
                             }
                         }
                         //시너지 삭제
+                        gm.SynergyUpdate();
                     }
                 }
-                else
-                {
-                    Debug.Log("필드 유닛 이동완료");
-                    dragChamp.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + setVec;
-                }
+            }
+            else
+            {
+                Debug.Log("필드 유닛 이동완료");
+                dragChamp.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + setVec;
             }
         }
         else //대기석 유닛의 이동(배틀 중 X)
@@ -153,22 +154,28 @@ public class MouseRay : MonoBehaviour
                 dragChamp = null;
                 return;
             }
-
-            if (hit.collider != null)
+            Debug.Log("대기석 유닛");
+            if(hit.collider != null)
             {
                 if (hit.transform.gameObject.layer == 10) //설치 불가지역
                 {
                     dragChamp.transform.position = beforeVec;
                     ui.StartCoroutine(ui.NoSetPos());
                 }
-                else
+                else if(hit.transform.gameObject.layer == 11) //같은 대기석 이라면?
                 {
-                    dragChamp.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + setVec;
-                    ws.obj[fi.seaNum] = null;
-                    gm.fieldUnit[ck] = dragChamp;
-
-                    //시너지 추가내용
+                    dragChamp.transform.position = beforeVec;
                 }
+            }
+            else
+            {
+                dragChamp.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + setVec;
+                ws.obj[fi.seaNum] = null;
+                gm.fieldUnit[ck] = dragChamp;
+                fi.inField = true;
+                Debug.Log("대기석 -> 필드 완료!");
+                //시너지 추가내용
+                gm.SynergyUpdate();
             }
         }
       

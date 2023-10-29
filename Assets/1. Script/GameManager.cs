@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public UIManager ui;
     public WaitingSeat ws;
     public ShopManager sm;
+    public BtnManager bt;
     public int lv;
 
     public GameObject[] fieldUnit=new GameObject[15];
@@ -27,9 +28,10 @@ public class GameManager : MonoBehaviour
     public int coin;
     public int continuity; // 연승패 코인
     public int champBlank;
-    public int[] synergy = new int[21];
+    public int[] synergy = new int[21]; //0 백신 / 1침착 /2 신중 /3 속기/4 행운/5생각/6디자인/7프로토타이핑
     public int[] augmentation = new int[3]; // 증강
     int[] tierPercentage = new int[4]; //각 레벨에 맞는 확률 기입
+
 
     public static Action gameover;
 
@@ -60,7 +62,7 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         gameover = () => { GameOver(); };
-
+        bt = GetComponent<BtnManager>();
 
         int mapPointParents = maps.transform.childCount;
         mapPointParent = new GameObject[mapPointParents];
@@ -110,6 +112,15 @@ public class GameManager : MonoBehaviour
         //시너지 초기화 및 챔프 리스트 초기화
         ui.SynergyReset();
         sm.ChampReset();
+
+        //1코 유닛 활성화
+        int z = UnityEngine.Random.Range(0, sm.cost1.Count);
+        Transform ch = bt.costObjs[0].Get(z).transform;
+
+        Fire fi = ch.gameObject.GetComponent<Fire>();
+        fi.bulletPool = bulletPool;
+        ws.obj[0] = ch.gameObject;
+        ch.position = ws.pos[0].transform.position;
 
         //적 무브포인트 인지
         int count = mapPointParent[mapIndex-1].transform.childCount;
@@ -166,6 +177,9 @@ public class GameManager : MonoBehaviour
     
         passEnemy = false;
         curEnemy = 0;
+
+        //시작전 시너지 확인
+        ui.SynergyE();
 
         //전투중 필드 유닛 상태변화(이동제한을 위해)
         gamestat = 2;
@@ -279,6 +293,14 @@ public class GameManager : MonoBehaviour
 
         exp += 2;
 
+        //힐 관련 시너지
+        float H = SynergyManager.heal + (SynergyManager.heal * SynergyManager.healX);
+        if (hp + H > maxHp)
+            hp = maxHp;
+        else
+            hp += H;
+
+        ui.HpUpdate();
         ui.CoinUpdate();
         ui.ExpUpdate();
         ui.ContinuityUpdate();
@@ -286,6 +308,7 @@ public class GameManager : MonoBehaviour
         stageIndex ++;
         StartCoroutine(DelayTime());
     }
+
     public void Reroll() //카드 소환
     {
         sm.DelCards();
@@ -369,5 +392,32 @@ public class GameManager : MonoBehaviour
             else//5티어 소환
             { sm.Champ5Produce(); }
         }
+    }
+
+    public void SynergyUpdate() //1 백신 / 2침착 /3 신중 /4 속기/5 침착/6생각/7디자인/8프로토타이핑
+    {
+        //스택 초기화
+        for (int i = 0; i < synergy.Length; i++)
+            synergy[i] = 0;
+
+
+
+        //유닛들의 시너지만큼 그 시너지에 스택 추가
+        for (int z = 0; z < fieldUnit.Length; z++)
+        {
+            if(fieldUnit != null)
+            {
+                Synergy sn = fieldUnit[z].GetComponent<Synergy>();
+                for (int s = 0; s < sn.synergy.Length; s++)
+                {
+                    int c = sn.synergy[s];
+                    synergy[c]++;
+                }
+            }
+        }
+
+      
+        //시너지 ui업데이트
+        ui.SynergyUpdate();
     }
 }

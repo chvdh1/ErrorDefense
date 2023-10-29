@@ -117,10 +117,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   goal: {fileID: 0}
+  defmoveSpeed: 1
   moveSpeed: 1
   movePoint: []
   movePointIndex: 0
   fly: 0
+  slow: 0
 --- !u!61 &347927189125211505
 BoxCollider2D:
   m_ObjectHideFlags: 0
