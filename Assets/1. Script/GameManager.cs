@@ -405,7 +405,7 @@ public class GameManager : MonoBehaviour
         //유닛들의 시너지만큼 그 시너지에 스택 추가
         for (int z = 0; z < fieldUnit.Length; z++)
         {
-            if(fieldUnit != null)
+            if(fieldUnit[z] != null)
             {
                 Synergy sn = fieldUnit[z].GetComponent<Synergy>();
                 for (int s = 0; s < sn.synergy.Length; s++)

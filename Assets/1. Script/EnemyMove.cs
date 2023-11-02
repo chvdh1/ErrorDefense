@@ -30,8 +30,8 @@ public class EnemyMove : MonoBehaviour
     public void SlowE(float sl , float slX)
     {
         slow = true;
-        float ck = defmoveSpeed - sl! > 0.2f ? 0.2f : defmoveSpeed - sl;
-        moveSpeed = (ck - sl) * (1 - (slX / 100));
+        float ck = defmoveSpeed - sl > 0.2f ? 0.2f : defmoveSpeed - sl;
+        moveSpeed = (ck) * (1 - (slX / 100));
     }
 
     void MovePath()

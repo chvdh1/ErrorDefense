@@ -52,6 +52,7 @@ public class UIManager : MonoBehaviour
     public Text noText;
     public GameObject sGroup;
     GameObject[] sBtn = new GameObject[8];
+    Text[] sBtnText = new Text[8];
 
     private void Awake()
     {
@@ -64,7 +65,8 @@ public class UIManager : MonoBehaviour
         continuityText = continuity.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>();
         for (int i = 0; i < sBtn.Length; i++)
         {
-            sBtn[i] = sGroup.transform.GetChild(i).gameObject.GetComponent<GameObject>();
+            sBtn[i] = sGroup.transform.GetChild(i).gameObject;
+            sBtnText[i] = sBtn[i].transform.GetChild(0).GetChild(0).gameObject.GetComponent<Text>();
         }
 
         gm = GameManager.Instance;
@@ -216,10 +218,10 @@ public class UIManager : MonoBehaviour
         for (int i = 0; i < synergyInfos.Count; i++)
         {
             synergyInfos[i].sCount = gm.synergy[i + 1];
-            synergyInfos[i].sStep = synergyInfos[i].sStep >= synergyInfos[i].sStep4 ? 4 :
-                synergyInfos[i].sStep >= synergyInfos[i].sStep3 ? 3 :
-                synergyInfos[i].sStep >= synergyInfos[i].sStep2 ? 2 :
-                synergyInfos[i].sStep >= synergyInfos[i].sStep1 ? 1 : 0;
+            synergyInfos[i].sStep = synergyInfos[i].sCount >= synergyInfos[i].sStep4 ? 4 :
+                synergyInfos[i].sCount >= synergyInfos[i].sStep3 ? 3 :
+                synergyInfos[i].sCount >= synergyInfos[i].sStep2 ? 2 :
+                synergyInfos[i].sCount >= synergyInfos[i].sStep1 ? 1 : 0;
         }
 
         //시너지 카운트가 높은 순서에 따라 정렬
@@ -230,25 +232,29 @@ public class UIManager : MonoBehaviour
 
 
 
-        //정령된 리스트의 순서에 따라 하이라이키 변경
-        for (int i = synergyInfos.Count-1; i >= 0; i--)
-        {
-            sBtn[i].transform.SetSiblingIndex(i);
-        }
-
         //하나라도 가지고 있는 시너지 시각화 및 단계에 맞게 색상 변화
-        for (int i = 0; i < synergyInfos.Count; i++)
+        for (int i = synergyInfos.Count - 1; i >= 0; i--)
         {
             if (synergyInfos[i].sCount > 0)
             {
                 sBtn[i].SetActive(true);
+                sBtn[i].transform.SetSiblingIndex(i); //정령된 리스트의 순서에 따라 하이라이키 변경
                 Image im = sBtn[i].GetComponent<Image>();
                 im.color = synergyInfos[i].sStep == 4 ? c4 :
                     synergyInfos[i].sStep == 3 ? c3 :
                     synergyInfos[i].sStep == 2 ? c2 :
                     synergyInfos[i].sStep == 1 ? c1 : c0;
+
+                //알맞는 택스트 변화
+                sBtnText[i].text = synergyInfos[i].sStep == 4 ? string.Format("{0} {1}\n{2} / {3} / {4} / <size=200>{5}</size>", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
+                     synergyInfos[i].sStep == 3 ? string.Format("{0} {1}\n{2} / {3} / <size=200>{4}</size> / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
+                      synergyInfos[i].sStep == 2 ? string.Format("{0} {1}\n{2} / <size=200>{3}</size> / {4} / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
+                       synergyInfos[i].sStep == 1 ? string.Format("{0} {1}\n<size=200>{2}</size> / {3} / {4} / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
+                       string.Format("{0} {1}\n{2} / {3} / {4} / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4);
+
+                Debug.Log(synergyInfos[i].sName + "/" + synergyInfos[i].sCount+ "/" + synergyInfos[i].sStep);
             }
-            else
+            else if (sBtn[i].activeSelf)
                 sBtn[i].SetActive(false);
         }
 

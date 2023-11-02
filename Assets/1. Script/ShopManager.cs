@@ -37,10 +37,10 @@ public class ShopManager : MonoBehaviour
     public static ShopManager shopManager;
 
     public List<ChampShop> cost1 = new List<ChampShop>();
-    List<ChampShop> cost2 = new List<ChampShop>();
-    List<ChampShop> cost3 = new List<ChampShop>();
-    List<ChampShop> cost4 = new List<ChampShop>();
-    List<ChampShop> cost5 = new List<ChampShop>();
+    public List<ChampShop> cost2 = new List<ChampShop>();
+    public List<ChampShop> cost3 = new List<ChampShop>();
+    public List<ChampShop> cost4 = new List<ChampShop>();
+    public List<ChampShop> cost5 = new List<ChampShop>();
 
 
     // ------------ 카드 소환
@@ -187,8 +187,6 @@ public class ShopManager : MonoBehaviour
             }
         }
         
-
-        cost1[i].cCount++;
         if (cost1[i].cCount >= cost1[i].cMax)
             cost1.RemoveAt(i);
     }
@@ -207,7 +205,6 @@ public class ShopManager : MonoBehaviour
                 break;
             }
         }
-        cost2[i].cCount++;
         if (cost2[i].cCount >= cost2[i].cMax)
             cost2.RemoveAt(i);
     }
@@ -225,7 +222,6 @@ public class ShopManager : MonoBehaviour
                 break;
             }
         }
-        cost3[i].cCount++;
         if (cost3[i].cCount >= cost3[i].cMax)
             cost3.RemoveAt(i);
     }
@@ -243,7 +239,7 @@ public class ShopManager : MonoBehaviour
                 break;
             }
         }
-        cost4[i].cCount++;
+
         if (cost4[i].cCount >= cost4[i].cMax)
             cost4.RemoveAt(i);
     }
@@ -261,7 +257,7 @@ public class ShopManager : MonoBehaviour
                 break;
             }
         }
-        cost5[i].cCount++;
+
         if (cost5[i].cCount >= cost5[i].cMax)
             cost5.RemoveAt(i);
     }
