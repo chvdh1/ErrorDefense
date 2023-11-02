@@ -72,26 +72,26 @@ public class MouseRay : MonoBehaviour
     {
         if (dragChamp == null)
             return;
-
-
-        
+                
         Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
 
         
         Fire fi = dragChamp.GetComponent<Fire>();
-        if (fi.inField) //필드 유닛의 이동(배틀 중 X)
+
+
+        if (hit.collider != null)
         {
-            if (hit.collider != null)
+            Debug.Log(hit.collider.gameObject);
+            if (hit.transform.gameObject.layer == 10) //설치 불가지역 (필드, 대기석 차이 없음)
             {
-                Debug.Log(hit.collider.gameObject);
-                if (hit.transform.gameObject.layer == 10) //설치 불가지역
-                {
-                    Debug.Log("필드 유닛 설치 불가지역");
-                    dragChamp.transform.position = beforeVec;
-                    ui.StartCoroutine(ui.NoSetPos());
-                }
-                else if (hit.transform.gameObject.layer == 11) //대기석으로 이동
+                Debug.Log("필드 유닛 설치 불가지역");
+                dragChamp.transform.position = beforeVec;
+                ui.StartCoroutine(ui.NoSetPos());
+            }
+            else if (hit.transform.gameObject.layer == 11) //대기석
+            {
+                if (fi.inField)
                 {
                     int s = -1;
                     for (int i = 0; i < ws.obj.Length; i++)//대기석 빈자리 확인
@@ -102,12 +102,13 @@ public class MouseRay : MonoBehaviour
                             break;
                         }
                     }
-                    if(s == -1)//빈자리 없으면 이전 위치로
+                    if (s == -1)//빈자리 없으면 이전 위치로
                     {
                         Debug.Log("대기석 빈 자리가 없음!");
                         dragChamp.transform.position = beforeVec;
+
                     }
-                       
+
                     else//대기석으로 이동
                     {
                         Debug.Log("필드 유닛 대기석으로");
@@ -127,58 +128,140 @@ public class MouseRay : MonoBehaviour
                         gm.SynergyUpdate();
                     }
                 }
+                else//같은 대기석이면? 제자리로 ㅎ
+                {
+                    dragChamp.transform.position = beforeVec;
+                }
             }
-            else
+            else if (hit.transform.gameObject.layer == 12) //판매
+            {
+                if(fi.inField)
+                {
+                    fi.seaNum = 0;
+                    for (int i = 0; i < gm.fieldUnit.Length; i++)
+                    {
+                        if (dragChamp == gm.fieldUnit[i])
+                        {
+                            gm.fieldUnit[i] = null;
+
+                            fi.inField = false;
+
+                            if (fi.cost == 1)
+                            {
+                                gm.sm.cost1[fi.num - 1].cCount--;
+                                Debug.Log(gm.sm.cost1[fi.num - 1].cName + "/" + gm.sm.cost1[fi.num - 1].cCount + "/" + gm.sm.cost1[fi.num - 1].cMax);
+                            }
+                            else if (fi.cost == 2)
+                            {
+                                gm.sm.cost2[fi.num - 1].cCount--;
+                                Debug.Log(gm.sm.cost2[fi.num - 1].cName + "/" + gm.sm.cost2[fi.num - 1].cCount + "/" + gm.sm.cost2[fi.num - 1].cMax);
+                            }
+                            else if (fi.cost == 3)
+                            {
+                                gm.sm.cost3[fi.num - 1].cCount--;
+                                Debug.Log(gm.sm.cost3[fi.num - 1].cName + "/" + gm.sm.cost3[fi.num - 1].cCount + "/" + gm.sm.cost3[fi.num - 1].cMax);
+                            }
+                            else if (fi.cost == 4)
+                            {
+                                gm.sm.cost4[fi.num - 1].cCount--;
+                                Debug.Log(gm.sm.cost4[fi.num - 1].cName + "/" + gm.sm.cost4[fi.num - 1].cCount + "/" + gm.sm.cost4[fi.num - 1].cMax);
+                            }
+                            else if (fi.cost == 5)
+                            {
+                                gm.sm.cost5[fi.num - 1].cCount--;
+                                Debug.Log(gm.sm.cost5[fi.num - 1].cName + "/" + gm.sm.cost5[fi.num - 1].cCount + "/" + gm.sm.cost5[fi.num - 1].cMax);
+                            }
+
+                            int coinget = fi.lv == 1 ? fi.cost : fi.lv == 2 ? fi.cost * 3 - 1 : fi.cost * 9 - 2;
+                            gm.coin += coinget;
+                            ui.CoinUpdate();
+
+                            dragChamp.SetActive(false);
+                            Debug.Log("필드 유닛 판매");
+                            break;
+                        }
+                    }
+                    //시너지 삭제
+                    gm.SynergyUpdate();
+                }
+                else
+                {
+                    if (fi.cost == 1)
+                    {
+                        gm.sm.cost1[fi.num - 1].cCount--;
+                        Debug.Log(gm.sm.cost1[fi.num - 1].cName + "/" + gm.sm.cost1[fi.num - 1].cCount + "/" + gm.sm.cost1[fi.num - 1].cMax);
+                    }
+                    else if (fi.cost == 2)
+                    {
+                        gm.sm.cost2[fi.num - 1].cCount--;
+                        Debug.Log(gm.sm.cost2[fi.num - 1].cName + "/" + gm.sm.cost2[fi.num - 1].cCount + "/" + gm.sm.cost2[fi.num - 1].cMax);
+                    }
+                    else if (fi.cost == 3)
+                    {
+                        gm.sm.cost3[fi.num - 1].cCount--;
+                        Debug.Log(gm.sm.cost3[fi.num - 1].cName + "/" + gm.sm.cost3[fi.num - 1].cCount + "/" + gm.sm.cost3[fi.num - 1].cMax);
+                    }
+                    else if (fi.cost == 4)
+                    {
+                        gm.sm.cost4[fi.num - 1].cCount--;
+                        Debug.Log(gm.sm.cost4[fi.num - 1].cName + "/" + gm.sm.cost4[fi.num - 1].cCount + "/" + gm.sm.cost4[fi.num - 1].cMax);
+                    }
+                    else if (fi.cost == 5)
+                    {
+                        gm.sm.cost5[fi.num - 1].cCount--;
+                        Debug.Log(gm.sm.cost5[fi.num - 1].cName + "/" + gm.sm.cost5[fi.num - 1].cCount + "/" + gm.sm.cost5[fi.num - 1].cMax);
+                    }
+
+                    int coinget = fi.lv == 0 ? fi.cost : fi.lv == 1 ? fi.cost * 3 - 1 : fi.cost * 9 - 2;
+                    gm.coin += coinget;
+                    ui.CoinUpdate();
+                    ws.obj[fi.seaNum] = null;
+                    fi.seaNum = 0;
+                    dragChamp.SetActive(false);
+                    Debug.Log("대기 유닛 판매");
+                }
+            }
+        }
+
+        else//rayhit이 없다면?
+        {
+            if (fi.inField)
             {
                 Debug.Log("필드 유닛 이동완료");
                 dragChamp.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + setVec;
             }
-        }
-        else //대기석 유닛의 이동(배틀 중 X)
-        {
-            //필드위에 유닛 수 확인
-            int ck = -1;
-            for (int i = 0; i < gm.lv; i++)
-            {
-                if (gm.fieldUnit[i] == null)
-                {
-                    ck = i;
-                    break;
-                }
-            }
-
-            if (ck == -1)
-            {
-                ui.StartCoroutine(ui.NoEmptySeats());
-                dragChamp.transform.position = beforeVec;
-                dragChamp = null;
-                return;
-            }
-            Debug.Log("대기석 유닛");
-            if(hit.collider != null)
-            {
-                if (hit.transform.gameObject.layer == 10) //설치 불가지역
-                {
-                    dragChamp.transform.position = beforeVec;
-                    ui.StartCoroutine(ui.NoSetPos());
-                }
-                else if(hit.transform.gameObject.layer == 11) //같은 대기석 이라면?
-                {
-                    dragChamp.transform.position = beforeVec;
-                }
-            }
             else
             {
-                dragChamp.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + setVec;
-                ws.obj[fi.seaNum] = null;
-                gm.fieldUnit[ck] = dragChamp;
-                fi.inField = true;
-                Debug.Log("대기석 -> 필드 완료!");
-                //시너지 추가내용
-                gm.SynergyUpdate();
+                //필드위에 유닛 수 확인
+                int ck = -1;
+                for (int i = 0; i < gm.lv; i++)
+                {
+                    if (gm.fieldUnit[i] == null)
+                    {
+                        ck = i;
+                        break;
+                    }
+                }
+
+                if (ck == -1)
+                {
+                    ui.StartCoroutine(ui.NoEmptySeats());
+                    dragChamp.transform.position = beforeVec;
+                }
+                else
+                {
+                    dragChamp.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + setVec;
+                    ws.obj[fi.seaNum] = null;
+                    gm.fieldUnit[ck] = dragChamp;
+                    fi.inField = true;
+                    Debug.Log("대기석 -> 필드 완료!");
+                    //시너지 추가내용
+                    gm.SynergyUpdate();
+                }
             }
         }
-      
+
+
         dragChamp = null;
     }
 }

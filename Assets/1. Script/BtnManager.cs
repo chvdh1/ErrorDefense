@@ -73,6 +73,7 @@ public class BtnManager : MonoBehaviour
         }
           
         Transform ch = costObjs[ccost - 1].Get(cc.Num-1).transform;
+        Debug.Log("구매 완료!");
         
         Fire fi = ch.gameObject.GetComponent<Fire>();
         fi.bulletPool = gm.bulletPool;
@@ -104,6 +105,85 @@ public class BtnManager : MonoBehaviour
                 sm.cost5[cc.Num - 1].cCount++;
                 Debug.Log(sm.cost5[cc.Num - 1].cName + "/" + sm.cost5[cc.Num - 1].cCount + "/" + sm.cost5[cc.Num - 1].cMax);
                 break;
+        }
+
+        //진화 확인
+
+
+        int c = ((ccost - 1) * 8) + cc.Num - 1;
+        for (int star1i = 0; star1i < gm.ul.lv1Units[c].Length; star1i++)
+        {
+            if (gm.ul.lv1Units[c][star1i] == null && star1i != 2)
+            {
+                gm.ul.lv1Units[c][star1i] = ch.gameObject;
+                break;
+            }
+            else if (gm.ul.lv1Units[c][star1i] == null && star1i == 2)
+            {
+                Fire setunit1 = gm.ul.lv1Units[c][0].GetComponent<Fire>();
+                Fire setunit2 = gm.ul.lv1Units[c][1].GetComponent<Fire>();
+                setunit1.seaNum = 0;
+                setunit2.seaNum = 0;
+                for (int m = 0; m < gm.fieldUnit.Length; m++)
+                {
+                    if (gm.ul.lv1Units[c][0] == gm.fieldUnit[m] || gm.ul.lv1Units[c][1] == gm.fieldUnit[m])
+                    {
+                        gm.fieldUnit[m].SetActive(false);
+                        gm.fieldUnit[m] = null;
+                    }
+                       
+                }
+                for (int w = 0; w < ws.obj.Length; w++)
+                {
+                    if (gm.ul.lv1Units[c][0] == ws.obj[w] || gm.ul.lv1Units[c][1] == ws.obj[w])
+                    {
+                        ws.obj[w].SetActive(false);
+                        ws.obj[w] = null;
+                    }
+                }
+                gm.ul.lv1Units[c][0] = null;
+                gm.ul.lv1Units[c][1] = null;
+                fi.lv++;
+                fi.LvUp();
+                for (int star2i = 0; star2i < gm.ul.lv2Units[c].Length; star2i++)
+                {
+                    if (gm.ul.lv2Units[c][star2i] == null && star2i != 2)
+                    {
+                        gm.ul.lv2Units[c][star2i] = ch.gameObject;
+                        break;
+                    }
+                    else if (gm.ul.lv1Units[c][star2i] == null && star2i == 2)
+                    {
+                        Fire setunit3 = gm.ul.lv2Units[c][0].GetComponent<Fire>();
+                        Fire setunit4 = gm.ul.lv2Units[c][1].GetComponent<Fire>();
+                        setunit3.seaNum = 0;
+                        setunit4.seaNum = 0;
+                        for (int m = 0; m < gm.fieldUnit.Length; m++)
+                        {
+                            if (gm.ul.lv2Units[c][0] == gm.fieldUnit[m] || gm.ul.lv2Units[c][1] == gm.fieldUnit[m])
+                            {
+                                gm.fieldUnit[m].SetActive(false);
+                                gm.fieldUnit[m] = null;
+                            }
+                               
+                        }
+                        for (int w = 0; w < ws.obj.Length; w++)
+                        {
+                            if (gm.ul.lv2Units[c][0] == ws.obj[w] || gm.ul.lv2Units[c][1] == ws.obj[w])
+                            {
+                                ws.obj[w].SetActive(false);
+                                ws.obj[w] = null;
+                            }
+                        }
+                        gm.ul.lv2Units[c][0] = null;
+                        gm.ul.lv2Units[c][1] = null;
+                        fi.lv++;
+                        fi.LvUp();
+                        gm.SynergyUpdate();
+                        break;
+                    }
+                }
+            }
         }
     }
 

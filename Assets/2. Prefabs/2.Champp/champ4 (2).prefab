@@ -478,6 +478,8 @@ MonoBehaviour:
   layder: {fileID: 6642236240831489474}
   inField: 0
   seaNum: 0
+  cost: 4
+  num: 2
   lv: 0
   defDmg:
   - 5

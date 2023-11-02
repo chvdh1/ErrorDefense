@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public WaitingSeat ws;
     public ShopManager sm;
     public BtnManager bt;
+    public UnitLvManager ul;
     public int lv;
 
     public GameObject[] fieldUnit=new GameObject[15];
@@ -30,7 +31,7 @@ public class GameManager : MonoBehaviour
     public int champBlank;
     public int[] synergy = new int[21]; //0 백신 / 1침착 /2 신중 /3 속기/4 행운/5생각/6디자인/7프로토타이핑
     public int[] augmentation = new int[3]; // 증강
-    int[] tierPercentage = new int[4]; //각 레벨에 맞는 확률 기입
+    int[] tierPercentage = new int[5]; //각 레벨에 맞는 확률 기입
 
 
     public static Action gameover;
@@ -76,6 +77,11 @@ public class GameManager : MonoBehaviour
         {
             noSet[i] = noSetP.transform.GetChild(i).gameObject;
         }
+        ul = GetComponent<UnitLvManager>();
+
+        Application.targetFrameRate = 60; //실행 프레임 속도 60프레임으로 고정 시키기.. 코드
+        QualitySettings.vSyncCount = 0;
+        //모니터 주사율(플레임율)이 다른 컴퓨터일 경우 캐릭터 조작시 빠르게 움직일 수 있다.
     }
 
     public void GameStart()
@@ -116,11 +122,15 @@ public class GameManager : MonoBehaviour
         //1코 유닛 활성화
         int z = UnityEngine.Random.Range(0, sm.cost1.Count);
         Transform ch = bt.costObjs[0].Get(z).transform;
+        sm.cost1[z].cCount++;
+       
 
         Fire fi = ch.gameObject.GetComponent<Fire>();
         fi.bulletPool = bulletPool;
         ws.obj[0] = ch.gameObject;
         ch.position = ws.pos[0].transform.position;
+
+        ul.lv1Units[z][0] = ch.gameObject;
 
         //적 무브포인트 인지
         int count = mapPointParent[mapIndex-1].transform.childCount;
@@ -146,17 +156,9 @@ public class GameManager : MonoBehaviour
         float t = stageIndex == 1 ? 5 : 10;
         float maxt = t;
 
-        //전투중 필드 유닛 상태변화(이동제한을 위해)
+        //대기중
         gamestat = 1;
-        for (int i = 0; i < fieldUnit.Length; i++)
-        {
-            if (fieldUnit[i] != null)
-            {
-                Fire fi = fieldUnit[i].GetComponent<Fire>();
-                fi.inField = false;
-                yield return new WaitForFixedUpdate();
-            }
-        }
+
         yield return new WaitForFixedUpdate();
         while(t>0)
         {
@@ -181,17 +183,8 @@ public class GameManager : MonoBehaviour
         //시작전 시너지 확인
         ui.SynergyE();
 
-        //전투중 필드 유닛 상태변화(이동제한을 위해)
+        //전투중 
         gamestat = 2;
-        for (int i = 0; i < fieldUnit.Length; i++)
-        {
-            if (fieldUnit[i] != null)
-            {
-                Fire fi = fieldUnit[i].GetComponent<Fire>();
-                fi.inField = true;
-                yield return new WaitForFixedUpdate();
-            }
-        }
 
 
         switch (stageIndex)
@@ -260,13 +253,23 @@ public class GameManager : MonoBehaviour
         if (!passEnemy)
         {
             coin++;
-            continuity = continuity > 0 ? continuity++ : 1;
+            if (continuity > 0)
+                continuity++;
+            else
+                continuity = 1;
+            Debug.Log("이겼다! continuity = " + continuity);
         } // 승리 및 연승패 코인 보너스
         else
         {
-            continuity = continuity < 0 ? continuity-- : -1;
+            if (continuity < 0)
+                continuity--;
+            else
+                continuity = -1;
+
             hp -= stageIndex;
+            Debug.Log("놓쳤따! continuity = " + continuity);
         }
+     
            
         switch(coin)
         {

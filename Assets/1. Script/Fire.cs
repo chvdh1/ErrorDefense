@@ -11,7 +11,11 @@ public class Fire : MonoBehaviour
     //대기석의 번호
     public int seaNum;
 
+    public int cost;
+    public int num;
     public int lv;
+
+    SpriteRenderer star;
 
     public float[] defDmg = new float[3];
     public float defShootTime;
@@ -25,14 +29,18 @@ public class Fire : MonoBehaviour
     public float criPer;
     public float criDmg;
 
-     
+    private void Awake()
+    {
+        star = transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>();
+    }
+
     private void OnEnable()
     {
-        dmg = defDmg[lv];
         shootTime = defShootTime;
         shootSpeed = defShootSpeed;
         criPer = defCriPer;
         criDmg = defCriDmg;
+        LvUp();
     }
 
     private void Update()
@@ -44,6 +52,24 @@ public class Fire : MonoBehaviour
             shootTime -= Time.deltaTime;
         else
             Shoot();
+    }
+
+    public void LvUp()
+    {
+        dmg = defDmg[lv];
+        switch(lv)
+        {
+            case 0:
+                star.color = new Color(1, 1, 1, 0);
+                break;
+            case 1:
+                star.color = new Color(0.6f, 0.6f, 0.6f, 1);
+                break;
+            case 2:
+                star.color = new Color(1,1, 0, 1);
+                break;
+        }
+        
     }
 
     void Shoot()
