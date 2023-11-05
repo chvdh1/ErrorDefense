@@ -108,8 +108,6 @@ public class BtnManager : MonoBehaviour
         }
 
         //진화 확인
-
-
         int c = ((ccost - 1) * 8) + cc.Num - 1;
         for (int star1i = 0; star1i < gm.ul.lv1Units[c].Length; star1i++)
         {
@@ -123,7 +121,9 @@ public class BtnManager : MonoBehaviour
                 Fire setunit1 = gm.ul.lv1Units[c][0].GetComponent<Fire>();
                 Fire setunit2 = gm.ul.lv1Units[c][1].GetComponent<Fire>();
                 setunit1.seaNum = 0;
+                setunit1.inField = false;
                 setunit2.seaNum = 0;
+                setunit2.inField = false;
                 for (int m = 0; m < gm.fieldUnit.Length; m++)
                 {
                     if (gm.ul.lv1Units[c][0] == gm.fieldUnit[m] || gm.ul.lv1Units[c][1] == gm.fieldUnit[m])
@@ -157,7 +157,9 @@ public class BtnManager : MonoBehaviour
                         Fire setunit3 = gm.ul.lv2Units[c][0].GetComponent<Fire>();
                         Fire setunit4 = gm.ul.lv2Units[c][1].GetComponent<Fire>();
                         setunit3.seaNum = 0;
+                        setunit3.inField = false;
                         setunit4.seaNum = 0;
+                        setunit4.inField = false;
                         for (int m = 0; m < gm.fieldUnit.Length; m++)
                         {
                             if (gm.ul.lv2Units[c][0] == gm.fieldUnit[m] || gm.ul.lv2Units[c][1] == gm.fieldUnit[m])

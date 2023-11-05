@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     public int continuity; // 연승패 코인
     public int champBlank;
     public int[] synergy = new int[21]; //0 백신 / 1침착 /2 신중 /3 속기/4 행운/5생각/6디자인/7프로토타이핑
+    public bool[] synergyOverlapCk = new bool[60];
     public int[] augmentation = new int[3]; // 증강
     int[] tierPercentage = new int[5]; //각 레벨에 맞는 확률 기입
 
@@ -402,19 +403,25 @@ public class GameManager : MonoBehaviour
         //스택 초기화
         for (int i = 0; i < synergy.Length; i++)
             synergy[i] = 0;
+        for (int i = 0; i < synergyOverlapCk.Length; i++)
+            synergyOverlapCk[i] = false;
 
 
 
         //유닛들의 시너지만큼 그 시너지에 스택 추가
         for (int z = 0; z < fieldUnit.Length; z++)
         {
-            if(fieldUnit[z] != null)
+            if (fieldUnit[z] != null)
             {
                 Synergy sn = fieldUnit[z].GetComponent<Synergy>();
-                for (int s = 0; s < sn.synergy.Length; s++)
+                if (!synergyOverlapCk[sn.champNum]) //중복 챔프가 없다면 시너지 추가
                 {
-                    int c = sn.synergy[s];
-                    synergy[c]++;
+                    for (int s = 0; s < sn.synergy.Length; s++)
+                    {
+                        int c = sn.synergy[s];
+                        synergy[c]++;
+                    }
+                    synergyOverlapCk[sn.champNum] = true;
                 }
             }
         }

@@ -443,6 +443,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49bbf824d794efd4cb0335bee27480d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  champNum: 44
   synergy: 010000000200000003000000
 --- !u!114 &4945820756362668954
 MonoBehaviour:
