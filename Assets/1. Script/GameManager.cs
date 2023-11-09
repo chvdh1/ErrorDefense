@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public ShopManager sm;
     public BtnManager bt;
     public UnitLvManager ul;
+    public AgManager am;
     public int lv;
 
     public GameObject[] fieldUnit=new GameObject[15];
@@ -31,7 +32,7 @@ public class GameManager : MonoBehaviour
     public int champBlank;
     public int[] synergy = new int[21]; //0 백신 / 1침착 /2 신중 /3 속기/4 행운/5생각/6디자인/7프로토타이핑
     public bool[] synergyOverlapCk = new bool[60];
-    public int[] augmentation = new int[3]; // 증강
+    public static bool[] augmentation = new bool[30]; // 증강
     int[] tierPercentage = new int[5]; //각 레벨에 맞는 확률 기입
 
 
@@ -116,9 +117,10 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        //시너지 초기화 및 챔프 리스트 초기화
+        //시너지,증강체 및 챔프 리스트 초기화
         ui.SynergyReset();
         sm.ChampReset();
+        am.AgClassSet();
 
         //1코 유닛 활성화
         int z = UnityEngine.Random.Range(0, sm.cost1.Count);
@@ -154,8 +156,12 @@ public class GameManager : MonoBehaviour
 
     IEnumerator DelayTime()
     {
-        float t = stageIndex == 1 ? 5 : 10;
+        float t = stageIndex == 1 ? 5 : stageIndex == 5 || stageIndex  == 12 || stageIndex == 19 ? 15 : 10;
         float maxt = t;
+
+        //증강체 획득(5,12,19)
+        if (stageIndex == 5 || stageIndex == 12 || stageIndex == 19)
+            am.SpawnAg();
 
         //대기중
         gamestat = 1;
@@ -398,7 +404,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SynergyUpdate() //1 백신 / 2침착 /3 신중 /4 속기/5 침착/6생각/7디자인/8프로토타이핑
+    public void SynergyUpdate() //1 백신 / 2침착 /3 신중 /4 속기/5 행운/6생각/7디자인/8프로토타이핑/9마케팅 / 10 효율
     {
         //스택 초기화
         for (int i = 0; i < synergy.Length; i++)

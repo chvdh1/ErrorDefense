@@ -15,5 +15,7 @@ public class SynergyManager : MonoBehaviour
     public static float slowX;
     public static float healX;  
     public static float allAttdmg;
-    public static float pDmgX; 
+    public static float pDmgX;
+    public static float mpRegen;
+    public static float pickupper;
 }

@@ -38,7 +38,7 @@ public class PlBullet : MonoBehaviour
             }
 
             float slowran = Random.Range(0, 100);
-            if (SynergyManager.slow > 0 && slowran < 45)
+            if (SynergyManager.slow > 0 && slowran < 30)
             {
                 EnemyMove em = collision.gameObject.GetComponent<EnemyMove>();
                 if (!em.slow)

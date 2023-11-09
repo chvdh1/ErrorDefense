@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class BtnManager : MonoBehaviour
@@ -15,6 +16,10 @@ public class BtnManager : MonoBehaviour
     public ShopManager sm;
     WaitingSeat ws;
     UIManager ui;
+
+    public Text aText;
+    public Text sText;
+    public Text sSText;
 
     public PoolManager[] costObjs = new PoolManager[5];
 
@@ -215,6 +220,36 @@ public class BtnManager : MonoBehaviour
         ui.CoinUpdate();
 
         gm.Reroll();
+    }
+
+    //시너지, 증강체 정보 확인 버튼
+    public void SinfoBtn()//시너지 정보 확인
+    {
+        GetSnBtn gs = EventSystem.current.currentSelectedGameObject.GetComponent<GetSnBtn>();
+        if (!sText.transform.parent.gameObject.activeSelf)
+        {
+            sText.transform.parent.gameObject.SetActive(true);
+            sText.text = gs.info;
+            gs.StepText();
+            sSText.text = gs.stepinfo;
+        }
+        else
+        {
+            sText.transform.parent.gameObject.SetActive(false);
+        }
+    }
+    public void AinfoBtn()//증강체 정보 확인
+    {
+        GetAgBtn ga = EventSystem.current.currentSelectedGameObject.GetComponent<GetAgBtn>();
+        if (!aText.transform.parent.gameObject.activeSelf)
+        {
+            aText.transform.parent.gameObject.SetActive(true);
+            aText.text = ga.info;
+        }
+        else
+        {
+            aText.transform.parent.gameObject.SetActive(false);
+        }
     }
 
 }

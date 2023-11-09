@@ -51,8 +51,8 @@ public class UIManager : MonoBehaviour
     Text continuityText;
     public Text noText;
     public GameObject sGroup;
-    GameObject[] sBtn = new GameObject[8];
-    Text[] sBtnText = new Text[8];
+    GameObject[] sBtn = new GameObject[10];
+    Text[] sBtnText = new Text[10];
 
     private void Awake()
     {
@@ -191,6 +191,10 @@ public class UIManager : MonoBehaviour
         synergyInfos.Add(node);
         node = new SynergyInfo("프로토타이핑", 0, 2, 4, 6, 8, 0, 8);
         synergyInfos.Add(node);
+        node = new SynergyInfo("마케팅", 0, 2, 4, 6, 8, 0, 8);
+        synergyInfos.Add(node);
+        node = new SynergyInfo("효율", 0, 2, 4, 6, 8, 0, 8);
+        synergyInfos.Add(node);
     }
 
 
@@ -250,6 +254,12 @@ public class UIManager : MonoBehaviour
                       synergyInfos[i].sStep == 2 ? string.Format("{0} {1}\n{2} / <size=200>{3}</size> / {4} / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
                        synergyInfos[i].sStep == 1 ? string.Format("{0} {1}\n<size=200>{2}</size> / {3} / {4} / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
                        string.Format("{0} {1}\n{2} / {3} / {4} / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4);
+
+
+                //시너지 버튼이 정보를 가지도록
+                GetSnBtn gs = sBtn[i].GetComponent<GetSnBtn>();
+                gs.step = synergyInfos[i].sStep;
+                gs.stepCount = synergyInfos[i].sCount;
 
                 Debug.Log(synergyInfos[i].sName + "/" + synergyInfos[i].sCount+ "/" + synergyInfos[i].sStep);
             }
@@ -314,16 +324,16 @@ public class UIManager : MonoBehaviour
                 SynergyManager.pDmg = 0;
                 break;
             case 1:
-                SynergyManager.pDmg = 1;
-                break;
-            case 2:
-                SynergyManager.pDmg = 3;
-                break;
-            case 3:
                 SynergyManager.pDmg = 5;
                 break;
-            case 4:
+            case 2:
                 SynergyManager.pDmg = 10;
+                break;
+            case 3:
+                SynergyManager.pDmg = 20;
+                break;
+            case 4:
+                SynergyManager.pDmg = 45;
                 break;
         }
         switch (synergyInfos[3].sStep)   //속기(공속 + 탄속 +)
@@ -437,8 +447,44 @@ public class UIManager : MonoBehaviour
                 SynergyManager.pDmgX = 250;
                 break;
         }
-
-
+        switch (synergyInfos[8].sStep)   //마케팅(픽업획득확률)
+        {
+            //fl pickup = pickupper;
+            case 0:
+                SynergyManager.pickupper = 0;
+                break;
+            case 1:
+                SynergyManager.pickupper = 10;
+                break;
+            case 2:
+                SynergyManager.pickupper = 20;
+                break;
+            case 3:
+                SynergyManager.pickupper = 35;
+                break;
+            case 4:
+                SynergyManager.pickupper = 55;
+                break;
+        }
+        switch (synergyInfos[9].sStep)   //효율(일정 시간마다 아군 유닛 마나 회복)
+        {
+            //fl mpplus = mpRegen;
+            case 0:
+                SynergyManager.mpRegen = 0;
+                break;
+            case 1:
+                SynergyManager.mpRegen = 5;
+                break;
+            case 2:
+                SynergyManager.mpRegen = 10;
+                break;
+            case 3:
+                SynergyManager.mpRegen = 15;
+                break;
+            case 4:
+                SynergyManager.mpRegen = 20;
+                break;
+        }
         //필드 유닛들에게 적용
         for (int i = 0; i < gm.fieldUnit.Length; i++)
         {
