@@ -89,7 +89,7 @@ public class BtnManager : MonoBehaviour
         fi.gm = gm;
         fi.bulletPool = gm.bulletPool;
         fi.seaNum = seatPosNum;
-        fi.AgUpdate();
+        fi.StatUpdate();
         ch.position = ws.pos[seatPosNum].transform.position;
         ws.obj[seatPosNum] = ch.gameObject;
         cc.gameObject.SetActive(false);

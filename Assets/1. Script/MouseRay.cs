@@ -262,7 +262,7 @@ public class MouseRay : MonoBehaviour
                     gm.SynergyUpdate();
 
                     //증강체 내용 추가
-                    fi.AgUpdate();
+                    fi.StatUpdate();
                 }
 
             }

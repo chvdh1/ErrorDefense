@@ -11,6 +11,9 @@ public class SkillManager : MonoBehaviour
     public float maxMp;
     public float mp;
 
+    public float defSkillDmgPer;
+    public float skillDmgPer;
+
     public PoolManager poolManager;
 
     private void Awake()

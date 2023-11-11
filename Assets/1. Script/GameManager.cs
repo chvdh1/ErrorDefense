@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour
         skill.poolManager = skillPool;
         fi.gm = Instance;
         fi.bulletPool = bulletPool;
-        fi.AgUpdate();
+        fi.StatUpdate();
         ws.obj[0] = ch.gameObject;
         ch.position = ws.pos[0].transform.position;
 
@@ -199,8 +199,7 @@ public class GameManager : MonoBehaviour
                 Fire fi = fieldUnit[i].GetComponent<Fire>();
                 sm.poolManager = skillPool;
                 fi.gm = Instance;
-                sm.mp = 0;
-                fi.AgUpdate();
+                fi.StatUpdate();
             }
             yield return new WaitForFixedUpdate();
         }

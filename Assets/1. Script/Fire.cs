@@ -18,6 +18,7 @@ public class Fire : MonoBehaviour
 
     SpriteRenderer star;
     SkillManager sm;
+    Champitems ci;
 
     public float[] defDmg = new float[3];
     public float defShootTime;
@@ -37,6 +38,7 @@ public class Fire : MonoBehaviour
     {
         star = transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>();
         sm = GetComponent<SkillManager>();
+        ci = GetComponent<Champitems>();
     }
 
     private void OnEnable()
@@ -54,8 +56,13 @@ public class Fire : MonoBehaviour
         else
             Shoot();
     }
-    public void AgUpdate()
+    public void StatUpdate()
     {
+        ci.ItemEffect();
+        //마나 초기화 및 스킬 딜 초기화
+        sm.mp = ci.cMp;
+        sm.skillDmgPer = sm.defSkillDmgPer + ci.cSkillDmg;
+
         //agHeal3 증강체 관련 변수
         float agHeal3 = inField && GameManager.augmentation[26] && GameManager.passEnemy ? 70 : 1;
         //agBoold1 증강체 관련 변수
@@ -64,11 +71,11 @@ public class Fire : MonoBehaviour
         //agBoold2 증강체 관련 변수
         float agBoold2 = inField && GameManager.augmentation[27] ? (gm.maxHp - gm.hp) : 0;
 
-        dmg = (defDmg[lv]+ agBoold1+ agBoold2) * ((AgManager.agAtDmg1 + AgManager.agAtDmg2 + AgManager.agAtDmg3 + agHeal3) / 100);
-        timespeed = Time.deltaTime + Time.deltaTime * ((AgManager.agAtSpeed1 + AgManager.agAtSpeed2 + AgManager.agAtSpeed3) / 100);
+        dmg = (defDmg[lv]+ agBoold1+ agBoold2+ ci.cDmg) * ((AgManager.agAtDmg1 + AgManager.agAtDmg2 + AgManager.agAtDmg3 + agHeal3) / 100);
+        timespeed = Time.deltaTime + Time.deltaTime * ((AgManager.agAtSpeed1 + AgManager.agAtSpeed2 + AgManager.agAtSpeed3 + ci.cAttSpeed) / 100);
         shootSpeed = defShootSpeed;
-        criPer = defCriPer;
-        criDmg = defCriDmg;
+        criPer = defCriPer+ ci.cCriPer;
+        criDmg = defCriDmg + ci.cCriDmg;
     }
 
     public void LvUp()
