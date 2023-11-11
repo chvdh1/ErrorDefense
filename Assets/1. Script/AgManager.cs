@@ -270,7 +270,9 @@ public class AgManager : MonoBehaviour
                 break;
 
             case 7://체력 30 증가
-
+                gm.maxHp += 30;
+                gm.hp += 30;
+                gm.ui.HpUpdate();
                 break;
 
             case 12://랜덤한 아이템 5개중 2개획득

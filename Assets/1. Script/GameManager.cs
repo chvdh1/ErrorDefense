@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public int lv;
 
     public GameObject[] fieldUnit=new GameObject[15];
+    public GameObject[] fieldEnemys = new GameObject[20];
 
     public float maxHp;
     public float hp;
@@ -49,7 +50,7 @@ public class GameManager : MonoBehaviour
     public GameObject noSetP;
     GameObject[] noSet;
     int stageIndex;
-    public bool passEnemy;
+    public static bool passEnemy;
 
     public static int totalEnemy;
     public static int curEnemy;
@@ -57,6 +58,7 @@ public class GameManager : MonoBehaviour
     //적 관련 변수
     public PoolManager enemyPool;
     public PoolManager bulletPool;
+    public PoolManager skillPool;
     public GameObject goal;
     public Transform[] spawnPos;
 
@@ -129,7 +131,11 @@ public class GameManager : MonoBehaviour
        
 
         Fire fi = ch.gameObject.GetComponent<Fire>();
+        SkillManager skill = ch.gameObject.GetComponent<SkillManager>();
+        skill.poolManager = skillPool;
+        fi.gm = Instance;
         fi.bulletPool = bulletPool;
+        fi.AgUpdate();
         ws.obj[0] = ch.gameObject;
         ch.position = ws.pos[0].transform.position;
 
@@ -183,7 +189,29 @@ public class GameManager : MonoBehaviour
         int enemySpawnindex = stageIndex + 2;
         int enemytype = 1;
         int enemytypeMin = 0;
-    
+
+        //증창체 관련 함수(마나)
+        for (int i = 0; i < fieldUnit.Length; i++)
+        {
+            if (fieldUnit[i] != null)
+            {
+                SkillManager sm = fieldUnit[i].GetComponent<SkillManager>();
+                Fire fi = fieldUnit[i].GetComponent<Fire>();
+                sm.poolManager = skillPool;
+                fi.gm = Instance;
+                sm.mp = 0;
+                fi.AgUpdate();
+            }
+            yield return new WaitForFixedUpdate();
+        }
+        if (augmentation[8])
+        { StartCoroutine(Augmentation8()); }
+        if (augmentation[18])
+        { StartCoroutine(Augmentation18()); }
+        if (augmentation[28])
+        { StartCoroutine(Augmentation28()); }
+        //-----------------------증창체 관련 함수(마나)
+
         passEnemy = false;
         curEnemy = 0;
 
@@ -230,12 +258,17 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
+        for (int i = 0; i < fieldEnemys.Length; i++)
+        {
+            fieldEnemys[i] = null;
+        }
         int rantype = UnityEngine.Random.Range(enemytypeMin, enemytype);
         yield return new WaitForFixedUpdate();
         for (int i = 0; i < enemySpawnindex; i++)
         {
             GameObject enemy = enemyPool.Get(rantype);
             enemy.transform.position = spawnPos[mapIndex-1].position;
+            fieldEnemys[i] = enemy;
             EnemyMove em = enemy.GetComponent<EnemyMove>();
             em.goal = goal;
             em.movePoint = new Transform[mapPoints.Length];
@@ -256,7 +289,44 @@ public class GameManager : MonoBehaviour
         }
 
         //스테이지 끝!
-       
+        switch (coin) //이자 수익
+        {
+            case < 10:
+                coin += 0;
+                break;
+            case < 20:
+                coin += 1;
+                break;
+            case < 30:
+                coin += 2;
+                break;
+            case < 40:
+                coin += 3;
+                break;
+            case < 50:
+                coin += 4;
+                break;
+            case < 60:
+                coin += 5;
+                break;
+                //증강체 관련 변수
+            case < 70:
+                coin += augmentation[21]||augmentation[11] ? 6 : 5;
+                break;
+            case < 80:
+                coin += augmentation[21] || augmentation[11] ? 7 : 5;
+                break;
+            case < 90:
+                coin += augmentation[21] ? 8 : 5;
+                break;
+            case < 100:
+                coin += augmentation[21] ? 9 : 5;
+                break;
+            case >= 100:
+                coin += augmentation[21] ? 10 : 5;
+                break;
+        }
+
         if (!passEnemy)
         {
             coin++;
@@ -278,35 +348,19 @@ public class GameManager : MonoBehaviour
         }
         int count = Mathf.Abs(continuity) < 5 ? Mathf.Abs(continuity) : 5; // 절대값 표시
 
-        coin += count * AgManager.agGetCoin;
-
-        switch (coin)
-        {
-            case < 10:
-                coin += 0;
-                break;
-            case < 20:
-                coin += 1;
-                break;
-            case < 30:
-                coin += 2;
-                break;
-            case < 40:
-                coin += 3;
-                break;
-            case < 50:
-                coin += 4;
-                break;
-            case >= 50:
-                coin += 5;
-                break;
-        } //이자 수익
+        coin += count * AgManager.agGetCoin; //증강체 변수
+       
         coin += stageIndex < 5 ? stageIndex+1 : 5;//기본 수익
 
-        exp += 2;
+        if (augmentation[10])
+            exp += passEnemy ? 5 : 4;
+        else
+            exp += 2;
+
 
         //힐 관련 시너지
-        float H = SynergyManager.heal + (SynergyManager.heal * SynergyManager.healX);
+        float healP = SynergyManager.heal + AgManager.agHeal1 + AgManager.agHeal2;
+        float H = healP + (healP * SynergyManager.healX);
         if (hp + H > maxHp)
             hp = maxHp;
         else
@@ -319,6 +373,58 @@ public class GameManager : MonoBehaviour
         Reroll();
         stageIndex ++;
         StartCoroutine(DelayTime());
+    }
+
+    IEnumerator Augmentation8()
+    {
+        yield return new WaitForFixedUpdate();
+        while(totalEnemy > curEnemy)
+        {
+            yield return new WaitForSeconds(5);
+            for (int i = 0; i < fieldUnit.Length; i++)
+            {
+                if (fieldUnit[i] != null)
+                {
+                    SkillManager sm = fieldUnit[i].GetComponent<SkillManager>();
+                    sm.mp += 5;
+                }
+                yield return new WaitForFixedUpdate();
+            }
+        }
+    }
+    IEnumerator Augmentation18()
+    {
+        yield return new WaitForFixedUpdate();
+        while (totalEnemy > curEnemy)
+        {
+            yield return new WaitForSeconds(3);
+            for (int i = 0; i < fieldUnit.Length; i++)
+            {
+                if (fieldUnit[i] != null)
+                {
+                    SkillManager sm = fieldUnit[i].GetComponent<SkillManager>();
+                    sm.mp += 5;
+                }
+                yield return new WaitForFixedUpdate();
+            }
+        }
+    }
+    IEnumerator Augmentation28()
+    {
+        yield return new WaitForFixedUpdate();
+        while (totalEnemy > curEnemy)
+        {
+            yield return new WaitForSeconds(3);
+            for (int i = 0; i < fieldUnit.Length; i++)
+            {
+                if (fieldUnit[i] != null)
+                {
+                    SkillManager sm = fieldUnit[i].GetComponent<SkillManager>();
+                    sm.mp += 10;
+                }
+                yield return new WaitForFixedUpdate();
+            }
+        }
     }
 
     public void Reroll() //카드 소환

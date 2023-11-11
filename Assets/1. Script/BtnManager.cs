@@ -21,6 +21,9 @@ public class BtnManager : MonoBehaviour
     public Text sText;
     public Text sSText;
 
+    public Text reRollText;
+    int costToPay = 2;
+
     public PoolManager[] costObjs = new PoolManager[5];
 
     private void Awake()
@@ -81,8 +84,12 @@ public class BtnManager : MonoBehaviour
         Debug.Log("구매 완료!");
         
         Fire fi = ch.gameObject.GetComponent<Fire>();
+        SkillManager skill = ch.gameObject.GetComponent<SkillManager>();
+        skill.poolManager = gm.skillPool;
+        fi.gm = gm;
         fi.bulletPool = gm.bulletPool;
         fi.seaNum = seatPosNum;
+        fi.AgUpdate();
         ch.position = ws.pos[seatPosNum].transform.position;
         ws.obj[seatPosNum] = ch.gameObject;
         cc.gameObject.SetActive(false);
@@ -203,23 +210,30 @@ public class BtnManager : MonoBehaviour
         }
 
         gm.coin -= 4;
-        gm.exp += 4;
+
+        gm.exp += GameManager.augmentation[20] ? 7 : 4;
+
         ui.ExpUpdate();
         ui.CoinUpdate();
     }
 
     public void ReRollBtn()
     {
-        if (gm.coin < 2)
+        int ran = Random.Range(0, 100);
+
+        if (gm.coin < costToPay)
         {
             ui.StartCoroutine(ui.NoCoin());
             return;
         }
 
-        gm.coin -= 2;
+        gm.coin -= costToPay;
         ui.CoinUpdate();
 
         gm.Reroll();
+
+        costToPay = ran < (AgManager.agReRollFree1 + AgManager.agReRollFree2 + AgManager.agReRollFree3) ? 0 : 2;
+        reRollText.text = string.Format("새로고침 {0}", costToPay);
     }
 
     //시너지, 증강체 정보 확인 버튼

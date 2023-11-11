@@ -74,7 +74,8 @@ public class UIManager : MonoBehaviour
 
     public void HpUpdate()
     {
-        float a = gm.hp / gm.maxHp;
+        float a = gm.hp / gm.maxHp <= 1 ? gm.hp / gm.maxHp : 1;
+
         hp.fillAmount = a;
         hpText.text = string.Format("{0}", gm.hp);
     }

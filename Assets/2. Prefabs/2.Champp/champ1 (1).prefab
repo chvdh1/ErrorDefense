@@ -184,6 +184,7 @@ GameObject:
   - component: {fileID: 9102091277231741697}
   - component: {fileID: 5078467411403965140}
   - component: {fileID: -5051206536379437776}
+  - component: {fileID: -6784600576426363819}
   - component: {fileID: 6519074628705084360}
   - component: {fileID: 4642452056198238327}
   - component: {fileID: -9021669549042628814}
@@ -279,6 +280,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   champNum: 11
   synergy: 010000000200000003000000
+--- !u!114 &-6784600576426363819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2623854460251141315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 183be1a6b79193d46aa5dc8b79e889ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  champNum: 0
+  maxMp: 100
+  mp: 0
+  poolManager: {fileID: 0}
 --- !u!114 &6519074628705084360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,6 +328,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPool: {fileID: 0}
   layder: {fileID: 6519074628705084360}
+  gm: {fileID: 0}
   inField: 0
   seaNum: 0
   cost: 1

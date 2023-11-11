@@ -6,6 +6,7 @@ public class Fire : MonoBehaviour
 {
     public PoolManager bulletPool;
     public Targeting layder;
+    public GameManager gm;
 
     public bool inField;
     //대기석의 번호
@@ -16,6 +17,7 @@ public class Fire : MonoBehaviour
     public int lv;
 
     SpriteRenderer star;
+    SkillManager sm;
 
     public float[] defDmg = new float[3];
     public float defShootTime;
@@ -29,17 +31,16 @@ public class Fire : MonoBehaviour
     public float criPer;
     public float criDmg;
 
+    float timespeed;
+
     private void Awake()
     {
         star = transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>();
+        sm = GetComponent<SkillManager>();
     }
 
     private void OnEnable()
     {
-        shootTime = defShootTime;
-        shootSpeed = defShootSpeed;
-        criPer = defCriPer;
-        criDmg = defCriDmg;
         LvUp();
     }
 
@@ -49,14 +50,29 @@ public class Fire : MonoBehaviour
             return;
 
         if (shootTime > 0)
-            shootTime -= Time.deltaTime;
+            shootTime -= timespeed;
         else
             Shoot();
+    }
+    public void AgUpdate()
+    {
+        //agHeal3 증강체 관련 변수
+        float agHeal3 = inField && GameManager.augmentation[26] && GameManager.passEnemy ? 70 : 1;
+        //agBoold1 증강체 관련 변수
+        int quotient = (int)System.Math.Truncate(gm.maxHp - gm.hp);
+        float agBoold1 = inField && GameManager.augmentation[17] ? quotient*3 : 0;
+        //agBoold2 증강체 관련 변수
+        float agBoold2 = inField && GameManager.augmentation[27] ? (gm.maxHp - gm.hp) : 0;
+
+        dmg = (defDmg[lv]+ agBoold1+ agBoold2) * ((AgManager.agAtDmg1 + AgManager.agAtDmg2 + AgManager.agAtDmg3 + agHeal3) / 100);
+        timespeed = Time.deltaTime + Time.deltaTime * ((AgManager.agAtSpeed1 + AgManager.agAtSpeed2 + AgManager.agAtSpeed3) / 100);
+        shootSpeed = defShootSpeed;
+        criPer = defCriPer;
+        criDmg = defCriDmg;
     }
 
     public void LvUp()
     {
-        dmg = defDmg[lv];
         switch(lv)
         {
             case 0:
@@ -86,5 +102,8 @@ public class Fire : MonoBehaviour
         int cri = Random.Range(0, 100);
         pb.dmg = cri < criPer ? dmg + (dmg * (50+ criDmg) /100) : dmg;
         pb.cri = cri < criPer ? true : false;
+
+        //마나 회복
+        sm.mp += 5;
     }
 }

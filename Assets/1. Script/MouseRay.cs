@@ -89,6 +89,7 @@ public class MouseRay : MonoBehaviour
                 dragChamp.transform.position = beforeVec;
                 ui.StartCoroutine(ui.NoSetPos());
             }
+            //--------------------설치 불가지역 (필드, 대기석 차이 없음)
             else if (hit.transform.gameObject.layer == 11) //대기석
             {
                 if (fi.inField)
@@ -133,6 +134,7 @@ public class MouseRay : MonoBehaviour
                     dragChamp.transform.position = beforeVec;
                 }
             }
+            //------------------------------------------------------대기석
             else if (hit.transform.gameObject.layer == 12) //판매
             {
                 if(fi.inField)
@@ -221,6 +223,7 @@ public class MouseRay : MonoBehaviour
                     Debug.Log("대기 유닛 판매");
                 }
             }
+            //------------------------------------------------------판매
         }
 
         else//rayhit이 없다면?
@@ -257,7 +260,11 @@ public class MouseRay : MonoBehaviour
                     Debug.Log("대기석 -> 필드 완료!");
                     //시너지 추가내용
                     gm.SynergyUpdate();
+
+                    //증강체 내용 추가
+                    fi.AgUpdate();
                 }
+
             }
         }
 

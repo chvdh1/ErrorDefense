@@ -6,17 +6,22 @@ public class EnemyStat : MonoBehaviour
 {
     public int enemyNum;
 
-    public float MaxHp;
+    public float maxHp;
     public float hp;
+
+    public float defDef;
+    public float def;
 
     public int dmg;
 
     float allattdmg;
     float defhittime = 1;
     float hittime = 0;
+
     private void OnEnable()
     {
-        hp = MaxHp;
+        hp = maxHp;
+        def = defDef;
         hittime = 0;
         allattdmg = SynergyManager.allAttdmg;
     }
