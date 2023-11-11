@@ -7,10 +7,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Text.RegularExpressions;
+using System;
 
 public class Ag
 {
     public GameObject aBtn;
+    
     public int aNum;
 
     public Ag(GameObject brn, int num)
@@ -21,6 +23,7 @@ public class Ag
 }
 public class AgManager : MonoBehaviour
 {
+    GameManager gm;
     public int[] agClass = new int[3];
     public int agCount = 0;
     public GameObject[] agBtn = new GameObject[30];
@@ -44,8 +47,11 @@ public class AgManager : MonoBehaviour
     GameObject[] aUibtns = new GameObject[30];
     GameObject[] posnum = new GameObject[3];
 
+
+
     private void Awake()
     {
+        gm = transform.parent.transform.GetChild(1).gameObject.GetComponent<GameManager>();
         for (int i = 0; i < agButtens.Length; i++)
         {
             agBtn[i] = agGroup.transform.GetChild(i).gameObject;
@@ -106,7 +112,7 @@ public class AgManager : MonoBehaviour
         ags2.Clear();
         selags.Clear();
 
-        Ag node = new Ag(agBtn[0],0);
+        Ag node = new Ag(agBtn[0], 0);
         ags0.Add(node);
 
         for (int i = 1; i < 30; i++)
@@ -116,7 +122,7 @@ public class AgManager : MonoBehaviour
 
             if (i < 10)
                 ags0.Add(node);
-            else if(i < 20)
+            else if (i < 20)
                 ags1.Add(node);
             else
                 ags2.Add(node);
@@ -125,7 +131,7 @@ public class AgManager : MonoBehaviour
 
     public void AgClassSet()
     {
-        int ran = Random.Range(0, 100);
+        int ran = UnityEngine.Random.Range(0, 100);
 
         switch (ran) // 0 = 실버 , 1 = 골드, 2 =프리즘
         {
@@ -161,9 +167,9 @@ public class AgManager : MonoBehaviour
         switch (agClass[agCount])
         {
             case 0:
-                for (int i = 0; i < 3;i++)
+                for (int i = 0; i < 3; i++)
                 {
-                    int ran = Random.Range(0, ags0.Count);
+                    int ran = UnityEngine.Random.Range(0, ags0.Count);
                     ags0[ran].aBtn.SetActive(true);
                     selags.Add(ags0[ran]);
                     ags0.Remove(ags0[ran]);
@@ -172,7 +178,7 @@ public class AgManager : MonoBehaviour
             case 1:
                 for (int i = 0; i < 3; i++)
                 {
-                    int ran = Random.Range(0, ags1.Count);
+                    int ran = UnityEngine.Random.Range(0, ags1.Count);
                     ags1[ran].aBtn.SetActive(true);
                     selags.Add(ags1[ran]);
                     ags1.Remove(ags1[ran]);
@@ -182,7 +188,7 @@ public class AgManager : MonoBehaviour
             case 2:
                 for (int i = 0; i < 3; i++)
                 {
-                    int ran = Random.Range(0, ags2.Count);
+                    int ran = UnityEngine.Random.Range(0, ags2.Count);
                     ags2[ran].aBtn.SetActive(true);
                     selags.Add(ags2[ran]);
                     ags2.Remove(ags2[ran]);
@@ -190,7 +196,7 @@ public class AgManager : MonoBehaviour
                 break;
         }
 
-        
+
     }
 
     public void SelectAg()
@@ -206,14 +212,14 @@ public class AgManager : MonoBehaviour
         }
 
         //정보주기
-        GameManager.augmentation[ab.agNum] = true;
+        AgEft(ab.agNum);
         aUibtns[ab.agNum].SetActive(true);
         aUibtns[ab.agNum].transform.position = posnum[agCount].transform.position;
 
         //선택안된 증강되돌리기
         for (int i = 0; i < selags.Count; i++)
         {
-            if(selags[i].aNum < 10)
+            if (selags[i].aNum < 10)
                 ags0.Add(selags[i]);
             else if (selags[i].aNum < 20)
                 ags1.Add(selags[i]);
@@ -223,6 +229,83 @@ public class AgManager : MonoBehaviour
         agCount++;
 
         agGroup.transform.parent.gameObject.SetActive(false);
+    }
+    public static int agGetCoin = 1; //연승패 코인
+    public static int agReRollFree1 = 0;//새로고침무료1
+    public static int agAtSpeed1 = 0;//공속1
+    public static int agAtDmg1 = 0;//딜1
+    public static int agHeal1 = 0;//회복1
+    public static int agGetMp1 = 0;//마나 회복1
+    public static int agFormat1 = 0;//체력 잃으면 딜
+    public static int agGetExp = 0;//연승패 경험치
+    public static int agInterest = 50;//최대이자
+    public static int agReRollFree2 = 0;//새로고침무료2
+    public static int agAtSpeed2 = 0;//공속2
+    public static int agAtDmg2 = 0;//딜2
+    public static int agHeal2 = 0;//회복2
+    public static int agBoold1 = 0;//잃은 체력5당 딜 3증가
+    public static int agGetMp2 = 0;//마나 회복2
+    public static int agFormat2 = 0;//체력 잃으면 퍼딜
+    public static int agMoreGetExp = 0; //구매시 추가 경험치
+    public static int agReRollFree3 = 0;//새로고침무료3
+    public static int agAtSpeed3 = 0;//공속3
+    public static int agAtDmg3 = 0;//딜3
+    public static int agHeal3 = 0;//회복3
+    public static int agBoold2 = 0;//잃은 체력당 딜증가
+    public static int agGetMp3 = 0;//마나 회복3
 
+
+    public void AgEft(int num)
+    {
+        GameManager.augmentation[num] = true;
+        //1회성 증강
+        switch (num)
+        {
+            case 0://경험치 10추가
+                gm.exp += 10;
+                gm.ui.ExpUpdate();
+                break;
+
+            case 2://랜덤한 아이템 2개 획득
+                break;
+
+            case 7://체력 30 증가
+
+                break;
+
+            case 12://랜덤한 아이템 5개중 2개획득
+
+                break;
+
+            case 22://랜덤한 아이템 5개 획득
+
+                break;
+
+        }
+
+        agGetCoin = GameManager.augmentation[1] ? 2 : 1;//연승코인 2배
+        agReRollFree1 = GameManager.augmentation[3] ? 10 : 0;//10확률로 새로고침 무료
+        agAtSpeed1 = GameManager.augmentation[4] ? 10 : 0;//아군의 공격속도 10% 증가
+        agAtDmg1 = GameManager.augmentation[5] ? 10 : 0;//아군의 딜 10%증가
+        agHeal1 = GameManager.augmentation[6] ? 2 : 0;//스테이지 종료시 체력 2회복
+        agGetMp1 = GameManager.augmentation[8] ? 5 : 0;//5초마다 마나 5+
+        agFormat1 = GameManager.augmentation[9] ? 10 : 0;//체력을 잃을 때 마다 적들에게 10데미지
+        agGetExp = GameManager.augmentation[10] ? 2 : 0;//경험치 연승중에 +2,연패중 +3
+        agInterest = GameManager.augmentation[21] ? 100 : GameManager.augmentation[11] ? 70 : 50;//최대이자 70원의 이자 혹은 100원
+        agReRollFree2 = GameManager.augmentation[13] ? 30 : 0;//경험치 연승중에 +2,연패중 +3
+        agAtSpeed2 = GameManager.augmentation[14] ? 25 : 0;//아군 공속 25%증가
+        agAtDmg2 = GameManager.augmentation[15] ? 25 : 0;//아군의 딜 25% 증가
+        agHeal2 = GameManager.augmentation[16] ? 5 : 0;//스테이지 종료시 체력 5회복
+        agBoold1 = GameManager.augmentation[17] ? 3 : 0;//잃은 체력 5당 딜 3증가
+        agGetMp2 = GameManager.augmentation[18] ? 5 : 0;//3초마다 마나 +5
+        agFormat2 = GameManager.augmentation[19] ? 10 : 0;//체력 잃을 때 마다 적들의 체력 10%대미지
+        agMoreGetExp = GameManager.augmentation[20] ? 3 : 0;//경험치 구매시 3추가
+        agReRollFree3 = GameManager.augmentation[22] ? 50 : 0;//50% 새로고침 무료
+        agAtSpeed3 = GameManager.augmentation[24] ? 50 : 0;//아군 공속 50%증가
+        agAtDmg3 = GameManager.augmentation[25] ? 50 : 0;//아군의 딜 50% 증가
+        agHeal3 = GameManager.augmentation[26] ? 70 : 0;//체력 모소가 있다면 아군 공격력 70% 증가
+        //agBoold2 = 잃은 체력당 공격력 증가************************** 
+        agGetMp3 = GameManager.augmentation[28] ? 10 : 0;//3초마다 마나 10+
+        //포멧3 = 체력 잃으면 적 방어력 0************************** 
     }
 }

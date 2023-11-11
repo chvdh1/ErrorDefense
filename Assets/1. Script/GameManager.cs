@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
     public int continuity; // 연승패 코인
     public int champBlank;
     public int[] synergy = new int[21]; //0 백신 / 1침착 /2 신중 /3 속기/4 행운/5생각/6디자인/7프로토타이핑
-    public bool[] synergyOverlapCk = new bool[60];
+    public bool[] synergyOverlapCk = new bool[60];//챔프가 겹쳐 시너지오르는 현상 막기위한 변수
     public static bool[] augmentation = new bool[30]; // 증강
     int[] tierPercentage = new int[5]; //각 레벨에 맞는 확률 기입
 
@@ -276,9 +276,11 @@ public class GameManager : MonoBehaviour
             hp -= stageIndex;
             Debug.Log("놓쳤따! continuity = " + continuity);
         }
-     
-           
-        switch(coin)
+        int count = Mathf.Abs(continuity) < 5 ? Mathf.Abs(continuity) : 5; // 절대값 표시
+
+        coin += count * AgManager.agGetCoin;
+
+        switch (coin)
         {
             case < 10:
                 coin += 0;
