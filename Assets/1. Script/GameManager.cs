@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     public BtnManager bt;
     public UnitLvManager ul;
     public AgManager am;
+    public static PoolManager itempool;
+    public Transform poolG;
     public int lv;
 
     public GameObject[] fieldUnit=new GameObject[15];
@@ -82,7 +84,7 @@ public class GameManager : MonoBehaviour
             noSet[i] = noSetP.transform.GetChild(i).gameObject;
         }
         ul = GetComponent<UnitLvManager>();
-
+        itempool = poolG.GetChild(13).gameObject.GetComponent<PoolManager>();
         Application.targetFrameRate = 60; //실행 프레임 속도 60프레임으로 고정 시키기.. 코드
         QualitySettings.vSyncCount = 0;
         //모니터 주사율(플레임율)이 다른 컴퓨터일 경우 캐릭터 조작시 빠르게 움직일 수 있다.
