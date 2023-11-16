@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -41,22 +42,72 @@ public class MouseRay : MonoBehaviour
         if (dragChamp != null)
             return;
 
-       Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         int layerM = 1 << LayerMask.NameToLayer("Champ");
         RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero,10, layerM);
 
 
-       if (hit.collider != null)
+        if (hit.collider != null)
         {
-            Fire fi = hit.transform.gameObject.GetComponent<Fire>();
-            if (fi.inField && gm.gamestat == 2)
-                return;
+            if (gm.bt.equipItem && gm.bt.itemNum != 0)//æ∆¿Ã≈€ ¿Â¬¯
+            {
+                Champitems ci = hit.transform.gameObject.GetComponent<Champitems>();
 
-            dragChamp = hit.transform.gameObject;
-            beforeVec = dragChamp.transform.position;
-            Debug.Log(dragChamp);
+                for (int i = 0; i < ci.sockets.Length; i++)
+                {
+                    if (ci.sockets[i].itemNum == 0 )
+                    {
+                        ci.sockets[i].itemNum = gm.bt.itemNum;
+                        ci.ItemEffect();
+                        gm.bt.equipItem = false;
+                        gm.bt.thisItem.SetActive(false);
+                        gm.bt.itemNum = 0;
+                        gm.bt.thisItem = null;
+                        break;
+                    }
+                    else if(ci.sockets[i].itemNum < 10)
+                    {
+                        ci.sockets[i].itemNum = MixItemNum(ci.sockets[i].itemNum, gm.bt.itemNum);
+                        ci.ItemEffect();
+                        gm.bt.equipItem = false;
+                        gm.bt.thisItem.SetActive(false);
+                        gm.bt.itemNum = 0;
+                        gm.bt.thisItem = null;
+                        break;
+                    }
+                    else if (i == ci.sockets.Length - 1 && ci.sockets[i].itemNum > 10)
+                    {
+                        ui.StartCoroutine(ui.NoItemS());
+                        gm.bt.thisItem = null;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                Fire fi = hit.transform.gameObject.GetComponent<Fire>();
+                if (fi.inField && gm.gamestat == 2)
+                    return;
+
+                dragChamp = hit.transform.gameObject;
+                beforeVec = dragChamp.transform.position;
+                Debug.Log(dragChamp);
+            }
         }
     }
+
+    int MixItemNum(int chitmeNum, int btNum)
+    {
+        int num = 0;
+
+        if(chitmeNum <= btNum)
+            num = (chitmeNum*10) + btNum;
+        else
+            num = (btNum * 10) + chitmeNum;
+
+        return num;
+    }
+
 
     void SetPos()
     {

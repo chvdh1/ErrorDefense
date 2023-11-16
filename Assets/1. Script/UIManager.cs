@@ -162,7 +162,35 @@ public class UIManager : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
     }
+    public IEnumerator NoItemS()
+    {
+        if (noText.color.a > 0.1f)
+            yield break;
 
+        noText.text = "더이상 아이템을 장착할 수 없습니다.";
+        noText.color = new Color(1, 1, 1, 1);
+        float c = 1;
+        while (noText.color.a > 0)
+        {
+            noText.color = new Color(1, 1, 1, c);
+            c -= 0.5f * Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+    }
+    public IEnumerator EquipItem()
+    {
+        if (noText.color.a > 0.1f)
+            yield break;
+
+        noText.text = "아이템을 장착할 유닛을 터치하세요.";
+        noText.color = new Color(1, 1, 1, 1);
+        while (gm.bt.equipItem)
+        {
+            noText.color = new Color(1, 1, 1, 1);
+            yield return new WaitForFixedUpdate();
+        }
+        noText.color = new Color(1, 1, 1, 0);
+    }
 
     public void ContinuityUpdate()
     {

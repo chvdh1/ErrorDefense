@@ -7,6 +7,9 @@ public class ItemSocket : MonoBehaviour
 {
     public int itemNum;
 
+
+
+    //기본 능력치
     public float iDmg = 0;
     public float iAttSpeed = 0;
     public float iCriPer = 0;
@@ -15,8 +18,38 @@ public class ItemSocket : MonoBehaviour
     public float iMp = 0;
     public float iDistance = 0;
 
+    //조합 능력치
+    public float iMaxMp = 0;
+    public float iAttMp = 0;
+    public float iSkillMDmg = 0;
+    public bool iDefDebuff = false;
+    public float iTrueDmg = 0;
+    public float iCriMp = 0; 
+    public float iMoreAttSpeed = 0;
+    public bool iSkillCri =false;
+    public float iMoreSkillAttSpeed = 0;
+    public bool iMoreAtt = false;
+    public float iMoreCriAttSpeed = 0;
+    public bool iSuperCri = false;
+
+    public SpriteRenderer st;
+
+    private void Awake()
+    {
+        st = GetComponent<SpriteRenderer>();
+    }
+
+
     public void ItemStat()
     {
+        iDmg = 0;
+        iAttSpeed = 0;
+        iCriPer = 0;
+        iCriDmg = 0;
+        iSkillDmg = 0;
+        iMp = 0;
+        iDistance = 0;
+
         switch (itemNum)
         {
             case 1:
@@ -44,22 +77,27 @@ public class ItemSocket : MonoBehaviour
 
             case 11: //최대마나 20감소
                 iMp = 40;
+                iMaxMp = 20;
                 break;
             case 12:// 평타당 10마나회복
                 iMp = 20;
                 iDmg = 10;
+                iAttMp = 10;
                 break;
             case 13://스킬딜 =스킬 사용 횟수 *10 % 증가
                 iMp = 20;
                 iSkillDmg = 10;
+                iSkillMDmg = 10;
                 break;
             case 14://3번째 평타시 맞은 유닛 방어력 30 % 감소
                 iMp = 20;
                 iDistance = 0.2f;
+                iDefDebuff = true;
                 break;
             case 15://15의 추가 대미지
                 iMp = 20;
                 iAttSpeed = 20;
+                iTrueDmg = 15;
                 break;
             case 16://평타, 스킬 딜 25%증가
                 iMp = 20;
@@ -70,11 +108,11 @@ public class ItemSocket : MonoBehaviour
             case 17://치명타시마나 30회복
                 iMp = 20;
                 iCriDmg = 10;
+                iCriMp = 30;
                 break;
 
 
             case 22: // 평타딜 추가 30%+
-
                 iDmg = 50;
                 break;
             case 23://평타, 스킬 딜25 % +
@@ -88,10 +126,12 @@ public class ItemSocket : MonoBehaviour
             case 25://평타 마다  공속 3 % +
                 iDmg = 10;
                 iAttSpeed = 20;
+                iMoreAttSpeed = 3;
                 break;
             case 26://스킬에 치명타 발동 치명 35 % + 평타딜 10 %
                 iDmg = 20;
                 iCriPer = 45;
+                iSkillCri = true;
                 break;
             case 27://치명타 딜 20%+평타딜 10 % +
                 iDmg = 20;
@@ -109,10 +149,12 @@ public class ItemSocket : MonoBehaviour
             case 35://스킬 사용시 공속 10 % +
                 iSkillDmg = 20;
                 iAttSpeed = 30;
+                iMoreSkillAttSpeed = 10;
                 break;
             case 36://스킬에 치명타 발동 치명 35 % +스킬딜 10 %
                 iSkillDmg = 20;
                 iCriPer = 45;
+                iSkillCri = true;
                 break;
             case 37://치명타 딜 20%+ 스킬딜 10 % +
                 iSkillDmg = 20;
@@ -142,6 +184,7 @@ public class ItemSocket : MonoBehaviour
 
             case 55://공속 40 % +20 % 확률로 2타
                 iAttSpeed = 80;
+                iMoreAtt = true;
                 break;
             case 56://  치명 15 % + 공속 20 % +
                 iAttSpeed = 30;
@@ -149,6 +192,7 @@ public class ItemSocket : MonoBehaviour
                 break;
             case 57:// 치명타시  공속 5 % +  치명타 딜 20 % +
                 iAttSpeed = 10;
+                iMoreCriAttSpeed = 5;
                 iCriDmg = 30;
                 break;
 
@@ -165,6 +209,7 @@ public class ItemSocket : MonoBehaviour
 
             case 77://10%확률로     +치딜 100 %
                 iCriDmg = 100;
+                iSuperCri = true;
                 break;
         }
 

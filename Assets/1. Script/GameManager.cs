@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] mapPoints;
     public GameObject noSetP;
     GameObject[] noSet;
-    int stageIndex;
+    public int stageIndex;
     public static bool passEnemy;
 
     public static int totalEnemy;
@@ -133,8 +133,9 @@ public class GameManager : MonoBehaviour
        
 
         Fire fi = ch.gameObject.GetComponent<Fire>();
-        SkillManager skill = ch.gameObject.GetComponent<SkillManager>();
+        ChampSkill skill = ch.gameObject.GetComponent<ChampSkill>();
         skill.poolManager = skillPool;
+        fi.skillPool = skillPool;
         fi.gm = Instance;
         fi.bulletPool = bulletPool;
         fi.StatUpdate();
@@ -197,9 +198,10 @@ public class GameManager : MonoBehaviour
         {
             if (fieldUnit[i] != null)
             {
-                SkillManager sm = fieldUnit[i].GetComponent<SkillManager>();
+                ChampSkill sm = fieldUnit[i].GetComponent<ChampSkill>();
                 Fire fi = fieldUnit[i].GetComponent<Fire>();
                 sm.poolManager = skillPool;
+                fi.skillPool = skillPool;
                 fi.gm = Instance;
                 fi.StatUpdate();
             }
@@ -264,15 +266,44 @@ public class GameManager : MonoBehaviour
             fieldEnemys[i] = null;
         }
         int rantype = UnityEngine.Random.Range(enemytypeMin, enemytype);
+
+        //적 아이템 보유 수량 확인-------------
+        List<int> haveItemlist = new List<int>();
+        int[] haveItemnum = new int[3];
+        if (stageIndex % 5  == 0)
+        {
+            for (int i = 0; i < enemySpawnindex; i++)
+            {
+                haveItemlist.Add(i);
+                yield return new WaitForFixedUpdate();
+            }
+            for (int i = 3; i > 0; i--)
+            {
+                int ra = UnityEngine.Random.Range(0, haveItemlist.Count);
+                haveItemnum[i-1] = ra;
+                haveItemlist.RemoveAt(ra);
+                yield return new WaitForFixedUpdate();
+            }
+        }
+        //-------------적 아이템 보유 수량 확인
         yield return new WaitForFixedUpdate();
         for (int i = 0; i < enemySpawnindex; i++)
         {
             GameObject enemy = enemyPool.Get(rantype);
+            EnemyStat enemyStat = enemy.GetComponent<EnemyStat>();
             enemy.transform.position = spawnPos[mapIndex-1].position;
             fieldEnemys[i] = enemy;
             EnemyMove em = enemy.GetComponent<EnemyMove>();
             em.goal = goal;
             em.movePoint = new Transform[mapPoints.Length];
+
+            //적 아이템 보유 확인
+            if(stageIndex % 5 == 0 && (i == haveItemnum[0] || i == haveItemnum[1] || i == haveItemnum[2]))
+                enemyStat.haveItem = true;
+            else
+                enemyStat.haveItem = false;
+
+
             for (int m = 0; m < em.movePoint.Length; m++)
             {
                 em.movePoint[m] = mapPoints[m].transform;
@@ -386,7 +417,7 @@ public class GameManager : MonoBehaviour
             {
                 if (fieldUnit[i] != null)
                 {
-                    SkillManager sm = fieldUnit[i].GetComponent<SkillManager>();
+                    Fire sm = fieldUnit[i].GetComponent<Fire>();
                     sm.mp += 5;
                 }
                 yield return new WaitForFixedUpdate();
@@ -403,7 +434,7 @@ public class GameManager : MonoBehaviour
             {
                 if (fieldUnit[i] != null)
                 {
-                    SkillManager sm = fieldUnit[i].GetComponent<SkillManager>();
+                    Fire sm = fieldUnit[i].GetComponent<Fire>();
                     sm.mp += 5;
                 }
                 yield return new WaitForFixedUpdate();
@@ -420,7 +451,7 @@ public class GameManager : MonoBehaviour
             {
                 if (fieldUnit[i] != null)
                 {
-                    SkillManager sm = fieldUnit[i].GetComponent<SkillManager>();
+                    Fire sm = fieldUnit[i].GetComponent<Fire>();
                     sm.mp += 10;
                 }
                 yield return new WaitForFixedUpdate();

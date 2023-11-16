@@ -1,18 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
-public class PlBullet : MonoBehaviour
+public class ChampSkill : MonoBehaviour
 {
-    public float dmg;
 
+
+    public int champNum;
+
+    public PoolManager poolManager;
+    public float dmg;
     public float trueDmg;
     public float shootSpeed;
     public Transform targetEnemy;
     public bool cri;
     public bool superCri;
-    public bool debuff;
 
     BtnManager bt;
 
@@ -35,22 +38,19 @@ public class PlBullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.layer ==7)
+        if (collision.gameObject.layer == 7)
         {
             EnemyStat es = collision.gameObject.GetComponent<EnemyStat>();
 
             es.hp -= dmg - es.def > 1 ? dmg - es.def : 1;
             es.hp -= trueDmg;
 
-            if (debuff)
-                es.def = es.defDef * 0.7f;
-
             if (es.hp <= 0)
             {
                 collision.gameObject.SetActive(false);
                 GameManager.curEnemy++;
                 if (es.haveItem)
-                { 
+                {
                     int itemran = Random.Range(0, 7);
                     RectTransform item = GameManager.itempool.Get(itemran).GetComponent<RectTransform>();
                     for (int i = 0; i < bt.itemList.Length; i++)
@@ -61,15 +61,13 @@ public class PlBullet : MonoBehaviour
                             item.SetParent(ItemList.itemListTrans);
                             break;
                         }
-                        else if(i == bt.itemList.Length-1)
+                        else if (i == bt.itemList.Length - 1)   
                         {
                             item.gameObject.SetActive(false);
                             break;
                         }
                     }
                 }
-
-               
             }
 
             float slowran = Random.Range(0, 100);
@@ -83,4 +81,6 @@ public class PlBullet : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+
+   
 }

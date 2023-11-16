@@ -18,6 +18,8 @@ public class EnemyStat : MonoBehaviour
     float defhittime = 1;
     float hittime = 0;
 
+    public bool haveItem;
+
     private void OnEnable()
     {
         hp = maxHp;

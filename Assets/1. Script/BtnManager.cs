@@ -48,10 +48,21 @@ public class BtnManager : MonoBehaviour
         {
             mixItmeListbtn[i] = mixItmeListG.transform.GetChild(i).gameObject;
             MixItemListUI ml = mixItmeListbtn[i].GetComponent<MixItemListUI>();
-            ml.num = transform.GetSiblingIndex();
+            ml.num = i < 7 ? i+11 : i < 13 ? i + 15 : i < 18 ? i + 20 : i < 22 ? i + 26 : i < 25 ? i + 33 : i < 27 ? i + 41 : 77;
             Text text = mixItmeListbtn[i].transform.GetChild(0).GetComponent<Text>();
             text.text = string.Format("{0}", ml.num);
         }
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.N))
+        { gm.stageIndex = 4; }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        { Time.timeScale = 2; }
+        if (Input.GetKeyDown(KeyCode.W))
+        { Time.timeScale = 1; }
     }
 
     public void StageOneBtn()
@@ -100,8 +111,9 @@ public class BtnManager : MonoBehaviour
         Debug.Log("구매 완료!");
         
         Fire fi = ch.gameObject.GetComponent<Fire>();
-        SkillManager skill = ch.gameObject.GetComponent<SkillManager>();
+        ChampSkill skill = ch.gameObject.GetComponent<ChampSkill>();
         skill.poolManager = gm.skillPool;
+        fi.skillPool =gm.skillPool;
         fi.gm = gm;
         fi.bulletPool = gm.bulletPool;
         fi.seaNum = seatPosNum;
@@ -297,20 +309,32 @@ public class BtnManager : MonoBehaviour
         }
     }
 
-    int itemNum = 0;
+
+    public int itemNum;
+    int beforeNum;
     public GameObject mixItmeListBtn;
+    public GameObject thisItem;
     public void ItemsInfo()//아이템 정보창
     {
+        
         GameObject text  = itemInfoText.transform.parent.gameObject;
         Item item = EventSystem.current.currentSelectedGameObject.GetComponent<Item>();
-        if (text.activeSelf)
+        thisItem = item.gameObject;
+        itemNum = item.itemNum;
+        if (itemNum == beforeNum)
         {
             text.SetActive(false);
             mixItmeListBtn.SetActive(false);
+            mixItmeList.SetActive(false);
+            if (box != null)
+                box.SetActive(false);
             itemNum = 0;
+            thisItem = null;
+            beforeNum = -1;
         }
         else
         {
+            beforeNum = itemNum;
             text.SetActive(true);
             switch (itemNum)
             {
@@ -431,7 +455,6 @@ public class BtnManager : MonoBehaviour
                      itemInfoText.text = "치명타 데미지\r\n100% 증가\r\n10% 확률로\r\n치명타 데미지 100%\r\n추가로 계산";
                     break;
             }
-            itemNum = item.itemNum;
 
             if(itemNum < 10)
                 mixItmeListBtn.SetActive(true);
@@ -439,10 +462,20 @@ public class BtnManager : MonoBehaviour
                 mixItmeListBtn.SetActive(false);
         }
     }
-    
+    public GameObject mixItmeList;
     public void MixItmeList()//목록 아이템 보기
     {
-        switch(itemNum)
+        if(!mixItmeList.activeSelf)
+            mixItmeList.SetActive(true);
+        else
+        {
+            mixItmeList.SetActive(false);
+            if(box != null)
+                box.SetActive(false);
+            return;
+        }
+          
+        switch (itemNum)
         {
             case 1:
                 for(int i = 0; i < mixItmeListbtn.Length;i++)
@@ -511,18 +544,20 @@ public class BtnManager : MonoBehaviour
     }
     public Text mixItemText;
     int mixNum = 0;
+    GameObject box;
     public void MixItmeListInfo()//조합 아이템 정보창
     {
+        box = mixItemText.gameObject.transform.parent.gameObject;
         MixItemListUI item = EventSystem.current.currentSelectedGameObject.GetComponent<MixItemListUI>();
         if (mixNum == item.num)
         {
             mixNum = 0;
-            mixItemText.gameObject.SetActive(false);
+            box.SetActive(false);
         }
         else
         {
             mixNum = item.num;
-            mixItemText.gameObject.SetActive(true);
+            box.SetActive(true);
             switch (item.num)
             {
                 case 11:
@@ -623,4 +658,32 @@ public class BtnManager : MonoBehaviour
         }
     }
 
+    public bool equipItem;
+    public GameObject[] itemList = new GameObject[10];
+    public void EquipItem()
+    {
+        GameObject text = itemInfoText.transform.parent.gameObject;
+        if (!equipItem)
+        {
+            equipItem = true;
+            gm.ui.StartCoroutine(gm.ui.EquipItem());
+            text.SetActive(false);
+            mixItmeListBtn.SetActive(false);
+            mixItmeList.SetActive(false);
+            if (box != null)
+                box.SetActive(false);
+        }
+           
+        else
+        {
+            equipItem = false;
+            text.SetActive(false);
+            mixItmeListBtn.SetActive(false);
+            mixItmeList.SetActive(false);
+            thisItem = null;
+            if (box != null)
+                box.SetActive(false);
+            itemNum = 0;
+        }
+    }
 }
