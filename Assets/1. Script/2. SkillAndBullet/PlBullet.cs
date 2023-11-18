@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -5,6 +6,8 @@ using UnityEngine;
 
 public class PlBullet : MonoBehaviour
 {
+    public int num;
+
     public float dmg;
 
     public float trueDmg;
@@ -12,26 +15,79 @@ public class PlBullet : MonoBehaviour
     public Transform targetEnemy;
     public bool cri;
     public bool superCri;
-    public bool debuff;
+    public bool debuff;//방어력 감소
+
+    public bool slow;//슬로우
+    public bool knockback; //넉백
+    public bool stun; //기절
+
+    //투사체가 아닐 경우
+    public bool spAtt;
+
+    bool sActive;
+
 
     BtnManager bt;
 
-    private void Update()
-    {
-        if (targetEnemy != null)
-            transform.position =
-               Vector2.MoveTowards(transform.position,
-               targetEnemy.position, shootSpeed * Time.deltaTime);
-        else
-            transform.position =
-               Vector2.MoveTowards(transform.position,
-               Vector2.left, shootSpeed * Time.deltaTime);
-    }
 
     private void OnEnable()
     {
+        slow = false;
+        knockback = false;
+        stun = false;
+        sActive = true;
         bt = BtnManager.Btn;
+        BulletEf();
     }
+    public void BulletEf()
+    {
+
+        if(!spAtt) //특수 공격은 나중에.
+           StartCoroutine(Move(2));
+
+
+        if (num == 13 || num == 43 || num == 53 )//넉백 확률
+        {
+            int ran = Random.Range(0, 100);
+            knockback = num == 13 && ran < 25 ? true : num == 43 && ran < 35 ? true : num == 53 && ran < 55 ? true : false;
+        }
+
+        if (num == 16 || num == 26 || num == 36 || num == 46 || num == 56 || num == 33 || num == 53)////슬로우
+        {
+            int ran = Random.Range(0, 100);
+            int tint = num == 16 || num == 26 || num == 36 || num == 46 || num == 56 ? 30 : 80;
+            slow = ran < tint ? true : false;
+        }
+
+        if (num == 53 || num == 57)//기절
+        {
+            int ran = Random.Range(0, 100);
+            int tint = num == 53 ? 25 : 10;
+            slow = ran < tint ? true : false;
+        }
+    }
+
+    IEnumerator Move(float time)
+    {
+        while (time > 0 && sActive)
+        {
+            if (targetEnemy != null)
+                transform.position =
+                   Vector2.MoveTowards(transform.position,
+                   targetEnemy.position, shootSpeed * Time.fixedDeltaTime);
+            else
+                transform.position =
+                   Vector2.MoveTowards(transform.position,
+                   Vector2.left, shootSpeed * Time.fixedDeltaTime);
+
+            time -= Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        sActive = false;
+        gameObject.SetActive(false);
+
+    }
+   
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -79,6 +135,8 @@ public class PlBullet : MonoBehaviour
                 if (!em.slow)
                     em.SlowE(SynergyManager.slow, SynergyManager.slowX);
             }
+
+            sActive = false;
 
             gameObject.SetActive(false);
         }

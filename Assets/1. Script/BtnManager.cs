@@ -110,14 +110,14 @@ public class BtnManager : MonoBehaviour
         Transform ch = costObjs[ccost - 1].Get(cc.Num-1).transform;
         Debug.Log("구매 완료!");
         
-        Fire fi = ch.gameObject.GetComponent<Fire>();
-        ChampSkill skill = ch.gameObject.GetComponent<ChampSkill>();
-        skill.poolManager = gm.skillPool;
-        fi.skillPool =gm.skillPool;
-        fi.gm = gm;
-        fi.bulletPool = gm.bulletPool;
-        fi.seaNum = seatPosNum;
-        fi.StatUpdate();
+
+        ChampMng cm = ch.gameObject.GetComponent<ChampMng>();
+        cm.cSkill.poolManager = gm.skillPool;
+        cm.cFire.skillPool =gm.skillPool;
+        cm.cFire.gm = gm;
+        cm.cFire.bulletPool = gm.bulletPool;
+        cm.cFire.seaNum = seatPosNum;
+        cm.cFire.StatUpdate();
         ch.position = ws.pos[seatPosNum].transform.position;
         ws.obj[seatPosNum] = ch.gameObject;
         cc.gameObject.SetActive(false);
@@ -183,8 +183,8 @@ public class BtnManager : MonoBehaviour
                 }
                 gm.ul.lv1Units[c][0] = null;
                 gm.ul.lv1Units[c][1] = null;
-                fi.lv++;
-                fi.LvUp();
+                cm.cFire.lv++;
+                cm.cFire.LvUp();
                 for (int star2i = 0; star2i < gm.ul.lv2Units[c].Length; star2i++)
                 {
                     if (gm.ul.lv2Units[c][star2i] == null && star2i != 2)
@@ -219,8 +219,8 @@ public class BtnManager : MonoBehaviour
                         }
                         gm.ul.lv2Units[c][0] = null;
                         gm.ul.lv2Units[c][1] = null;
-                        fi.lv++;
-                        fi.LvUp();
+                        cm.cFire.lv++;
+                        cm.cFire.LvUp();
                         gm.SynergyUpdate();
                         break;
                     }

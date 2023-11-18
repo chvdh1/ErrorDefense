@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5399038436320431515}
   - component: {fileID: 3773955910587810117}
+  - component: {fileID: 1119427892064993969}
   - component: {fileID: 727071677649985967}
-  - component: {fileID: -9069723955183520124}
   - component: {fileID: 7726628166044615688}
   - component: {fileID: 3279941916864619961}
   - component: {fileID: 7407552275595973817}
@@ -95,6 +95,24 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1119427892064993969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144514406393829063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4de9c4015ae74cb4cb72143cb1bd60a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cItems: {fileID: 0}
+  cSkill: {fileID: 0}
+  cFire: {fileID: 0}
+  cPl: {fileID: 0}
+  cSynergy: {fileID: 0}
+  cTargeting: {fileID: 0}
 --- !u!114 &727071677649985967
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,27 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   champNum: 23
-  synergy: 010000000200000003000000
---- !u!114 &-9069723955183520124
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 144514406393829063}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183be1a6b79193d46aa5dc8b79e889ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  champNum: 0
-  poolManager: {fileID: 0}
-  dmg: 0
-  trueDmg: 0
-  shootSpeed: 0
-  targetEnemy: {fileID: 0}
-  cri: 0
-  superCri: 0
+  synergy: 050000000a00000000000000
 --- !u!114 &7726628166044615688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,7 +140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scanRange: 3
-  defScanRange: 3
+  defScanRange: 1.5
   targetLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -204,15 +202,15 @@ MonoBehaviour:
   num: 3
   lv: 0
   defDmg:
-  - 5
-  - 10
-  - 25
+  - 10.4
+  - 19.5
+  - 48.75
   defSkillDmg:
-  - 0
-  - 0
-  - 0
-  defShootTime: 1.2
-  defShootSpeed: 2
+  - 1.2
+  - 1.4
+  - 2.2
+  defShootTime: 1.6
+  defShootSpeed: 1.3
   defCriPer: 20
   defCriDmg: 0
   defMaxMp: 20

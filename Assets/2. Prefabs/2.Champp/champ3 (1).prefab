@@ -94,8 +94,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2159105810676483806}
   - component: {fileID: 2817508985334175360}
+  - component: {fileID: 3121642368633889523}
   - component: {fileID: 8937693308767968508}
-  - component: {fileID: -8364822477186586673}
   - component: {fileID: 2807146605265908352}
   - component: {fileID: -6599080039141207930}
   - component: {fileID: 453210075329479414}
@@ -179,6 +179,24 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3121642368633889523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1834215995759771442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4de9c4015ae74cb4cb72143cb1bd60a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cItems: {fileID: 0}
+  cSkill: {fileID: 0}
+  cFire: {fileID: 0}
+  cPl: {fileID: 0}
+  cSynergy: {fileID: 0}
+  cTargeting: {fileID: 0}
 --- !u!114 &8937693308767968508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,27 +210,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   champNum: 31
-  synergy: 010000000200000003000000
---- !u!114 &-8364822477186586673
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1834215995759771442}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183be1a6b79193d46aa5dc8b79e889ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  champNum: 0
-  poolManager: {fileID: 0}
-  dmg: 0
-  trueDmg: 0
-  shootSpeed: 0
-  targetEnemy: {fileID: 0}
-  cri: 0
-  superCri: 0
+  synergy: 030000000400000000000000
 --- !u!114 &2807146605265908352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,7 +224,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scanRange: 3
-  defScanRange: 3
+  defScanRange: 1.5
   targetLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -284,19 +282,19 @@ MonoBehaviour:
   gm: {fileID: 0}
   inField: 0
   seaNum: 0
-  cost: 1
-  num: 31
+  cost: 3
+  num: 1
   lv: 0
   defDmg:
-  - 5
-  - 10
-  - 25
+  - 18.2
+  - 39
+  - 97.5
   defSkillDmg:
-  - 0
-  - 0
-  - 0
-  defShootTime: 1.2
-  defShootSpeed: 2
+  - 1.2
+  - 1.4
+  - 2.2
+  defShootTime: 1
+  defShootSpeed: 2.2
   defCriPer: 20
   defCriDmg: 0
   defMaxMp: 20

@@ -12,6 +12,8 @@ public class MouseRay : MonoBehaviour
     public WaitingSeat ws;
     public UIManager ui;
 
+    public SpriteRenderer champRange;
+
     public Vector2 defultVec = new Vector2(0, 1);
     Vector3 setVec = new Vector3(0, 0,10);
     Vector2 beforeVec;
@@ -63,6 +65,7 @@ public class MouseRay : MonoBehaviour
                         gm.bt.thisItem.SetActive(false);
                         gm.bt.itemNum = 0;
                         gm.bt.thisItem = null;
+                        StartCoroutine(champRangepos(ci.gameObject.GetComponent<Targeting>()));
                         break;
                     }
                     else if(ci.sockets[i].itemNum < 10)
@@ -73,6 +76,7 @@ public class MouseRay : MonoBehaviour
                         gm.bt.thisItem.SetActive(false);
                         gm.bt.itemNum = 0;
                         gm.bt.thisItem = null;
+                        StartCoroutine(champRangepos(ci.gameObject.GetComponent<Targeting>()));
                         break;
                     }
                     else if (i == ci.sockets.Length - 1 && ci.sockets[i].itemNum > 10)
@@ -91,6 +95,10 @@ public class MouseRay : MonoBehaviour
 
                 dragChamp = hit.transform.gameObject;
                 beforeVec = dragChamp.transform.position;
+
+                //사거리 표시
+                Targeting tt = dragChamp.GetComponent<Targeting>();
+                champRange.size = new Vector2(tt.scanRange * 2, tt.scanRange * 2);
                 Debug.Log(dragChamp);
             }
         }
@@ -113,10 +121,12 @@ public class MouseRay : MonoBehaviour
     {
         if (dragChamp == null)
             return;
+        if(champRange.color.a == 0)
+            champRange.color = new Color(0, 0.6f, 1, 0.3f);
+
         Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         dragChamp.transform.position =new Vector2(pos.x, pos.y + defultVec.y);
-
-      
+        champRange.transform.position = pos;
     }
 
     void ResetObj()
@@ -138,6 +148,7 @@ public class MouseRay : MonoBehaviour
             {
                 Debug.Log("필드 유닛 설치 불가지역");
                 dragChamp.transform.position = beforeVec;
+                champRange.color = new Color(0, 0.6f, 1, 0);
                 ui.StartCoroutine(ui.NoSetPos());
             }
             //--------------------설치 불가지역 (필드, 대기석 차이 없음)
@@ -158,7 +169,7 @@ public class MouseRay : MonoBehaviour
                     {
                         Debug.Log("대기석 빈 자리가 없음!");
                         dragChamp.transform.position = beforeVec;
-
+                        StartCoroutine(champRangepos(dragChamp.GetComponent<Targeting>()));
                     }
 
                     else//대기석으로 이동
@@ -178,11 +189,13 @@ public class MouseRay : MonoBehaviour
                         }
                         //시너지 삭제
                         gm.SynergyUpdate();
+                        champRange.color = new Color(0, 0.6f, 1, 0);
                     }
                 }
                 else//같은 대기석이면? 제자리로 ㅎ
                 {
                     dragChamp.transform.position = beforeVec;
+                    champRange.color = new Color(0, 0.6f, 1, 0);
                 }
             }
             //------------------------------------------------------대기석
@@ -231,6 +244,7 @@ public class MouseRay : MonoBehaviour
 
                             dragChamp.SetActive(false);
                             Debug.Log("필드 유닛 판매");
+                            champRange.color = new Color(0, 0.6f, 1, 0);
                             break;
                         }
                     }
@@ -272,6 +286,7 @@ public class MouseRay : MonoBehaviour
                     fi.seaNum = 0;
                     dragChamp.SetActive(false);
                     Debug.Log("대기 유닛 판매");
+                    champRange.color = new Color(0, 0.6f, 1, 0);
                 }
             }
             //------------------------------------------------------판매
@@ -317,9 +332,26 @@ public class MouseRay : MonoBehaviour
                 }
 
             }
+
+            StartCoroutine(champRangepos(dragChamp.GetComponent<Targeting>()));
         }
 
 
         dragChamp = null;
+    }
+
+    IEnumerator champRangepos(Targeting tt)
+    {
+        champRange.transform.position = tt.transform.position;
+        champRange.color = new Color(0,0.6f,1,0.3f);
+        champRange.size = new Vector2(tt.scanRange * 2, tt.scanRange * 2);
+        float a = 0.3f;
+        while(a > 0)
+        {
+            a -= 0.3f / 60f;
+            champRange.color = new Color(0, 0.6f, 1, a);
+            yield return new WaitForSeconds(1/60);
+        }
+        champRange.color = new Color(0, 0.6f, 1, 0);
     }
 }

@@ -330,8 +330,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1312714746694199567}
   - component: {fileID: 6911372271036533091}
+  - component: {fileID: 2703373704191503771}
   - component: {fileID: 1563499936894131892}
-  - component: {fileID: -6654101473188311852}
   - component: {fileID: 5376947899632328301}
   - component: {fileID: -100871750137430828}
   - component: {fileID: 6032972063872492069}
@@ -415,6 +415,24 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2703373704191503771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4103314157509168260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4de9c4015ae74cb4cb72143cb1bd60a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cItems: {fileID: 0}
+  cSkill: {fileID: 0}
+  cFire: {fileID: 0}
+  cPl: {fileID: 0}
+  cSynergy: {fileID: 0}
+  cTargeting: {fileID: 0}
 --- !u!114 &1563499936894131892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -428,27 +446,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   champNum: 28
-  synergy: 010000000200000003000000
---- !u!114 &-6654101473188311852
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4103314157509168260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183be1a6b79193d46aa5dc8b79e889ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  champNum: 0
-  poolManager: {fileID: 0}
-  dmg: 0
-  trueDmg: 0
-  shootSpeed: 0
-  targetEnemy: {fileID: 0}
-  cri: 0
-  superCri: 0
+  synergy: 070000000800000000000000
 --- !u!114 &5376947899632328301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -524,14 +522,14 @@ MonoBehaviour:
   num: 8
   lv: 0
   defDmg:
-  - 5
-  - 10
-  - 25
+  - 8
+  - 15
+  - 37.5
   defSkillDmg:
-  - 0
-  - 0
-  - 0
-  defShootTime: 1.2
+  - 1.2
+  - 1.4
+  - 2.2
+  defShootTime: 1.6
   defShootSpeed: 2
   defCriPer: 20
   defCriDmg: 0

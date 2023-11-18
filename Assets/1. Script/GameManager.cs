@@ -130,15 +130,14 @@ public class GameManager : MonoBehaviour
         int z = UnityEngine.Random.Range(0, sm.cost1.Count);
         Transform ch = bt.costObjs[0].Get(z).transform;
         sm.cost1[z].cCount++;
-       
 
-        Fire fi = ch.gameObject.GetComponent<Fire>();
-        ChampSkill skill = ch.gameObject.GetComponent<ChampSkill>();
-        skill.poolManager = skillPool;
-        fi.skillPool = skillPool;
-        fi.gm = Instance;
-        fi.bulletPool = bulletPool;
-        fi.StatUpdate();
+
+        ChampMng cm = ch.gameObject.GetComponent<ChampMng>();
+        cm.cSkill.poolManager = skillPool;
+        cm.cFire.skillPool = skillPool;
+        cm.cFire.gm = Instance;
+        cm.cFire.bulletPool = bulletPool;
+        cm.cFire.StatUpdate();
         ws.obj[0] = ch.gameObject;
         ch.position = ws.pos[0].transform.position;
 
@@ -198,12 +197,11 @@ public class GameManager : MonoBehaviour
         {
             if (fieldUnit[i] != null)
             {
-                ChampSkill sm = fieldUnit[i].GetComponent<ChampSkill>();
-                Fire fi = fieldUnit[i].GetComponent<Fire>();
-                sm.poolManager = skillPool;
-                fi.skillPool = skillPool;
-                fi.gm = Instance;
-                fi.StatUpdate();
+                ChampMng cm = fieldUnit[i].GetComponent<ChampMng>();
+                cm.cSkill.poolManager = skillPool;
+                cm.cFire.skillPool = skillPool;
+                cm.cFire.gm = Instance;
+                cm.cFire.StatUpdate();
             }
             yield return new WaitForFixedUpdate();
         }

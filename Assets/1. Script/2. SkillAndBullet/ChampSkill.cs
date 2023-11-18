@@ -5,8 +5,6 @@ using UnityEngine.Experimental.GlobalIllumination;
 
 public class ChampSkill : MonoBehaviour
 {
-
-
     public int champNum;
 
     public PoolManager poolManager;
@@ -17,23 +15,59 @@ public class ChampSkill : MonoBehaviour
     public bool cri;
     public bool superCri;
 
-    BtnManager bt;
+    public bool slow;//슬로우
+    public bool knockback; //넉백
+    public bool stun; //기절
 
-    private void Update()
-    {
-        if (targetEnemy != null)
-            transform.position =
-               Vector2.MoveTowards(transform.position,
-               targetEnemy.position, shootSpeed * Time.deltaTime);
-        else
-            transform.position =
-               Vector2.MoveTowards(transform.position,
-               Vector2.left, shootSpeed * Time.deltaTime);
-    }
+    //투사체가 아닐 경우
+    public bool spAtt;
+
+    bool sActive;
+
+    BtnManager bt;
 
     private void OnEnable()
     {
+        slow = false;
+        knockback = false;
+        stun = false;
+        sActive = true;
         bt = BtnManager.Btn;
+        SkillEf();
+    }
+
+    public void SkillEf()
+    {
+        StartCoroutine(Move(2));
+
+        switch (champNum)
+        {
+            case 1:
+                break;
+
+        }
+    }
+
+
+    IEnumerator Move(float time)
+    {
+        while (time > 0 && sActive)
+        {
+            if (targetEnemy != null)
+                transform.position =
+                   Vector2.MoveTowards(transform.position,
+                   targetEnemy.position, shootSpeed * Time.fixedDeltaTime);
+            else
+                transform.position =
+                   Vector2.MoveTowards(transform.position,
+                   Vector2.left, shootSpeed * Time.fixedDeltaTime);
+
+            time -= Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        sActive = false;
+        gameObject.SetActive(false);
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

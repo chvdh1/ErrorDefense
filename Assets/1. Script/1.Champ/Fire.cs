@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
+using static UnityEditor.PlayerSettings;
 
 public class Fire : MonoBehaviour
 {
@@ -86,11 +88,11 @@ public class Fire : MonoBehaviour
 
         dmg = (defDmg[lv]+ agBoold1+ agBoold2+ ci.cDmg) * ((AgManager.agAtDmg1 + AgManager.agAtDmg2 + AgManager.agAtDmg3 + agHeal3) / 100);
         skillDmg = defSkillDmg[lv];
-
         timespeed = Time.deltaTime + Time.deltaTime * ((AgManager.agAtSpeed1 + AgManager.agAtSpeed2 + AgManager.agAtSpeed3 + ci.cAttSpeed) / 100);
         shootSpeed = defShootSpeed;
         criPer = defCriPer+ ci.cCriPer;
         criDmg = defCriDmg + ci.cCriDmg;
+        layder.scanRange = layder.defScanRange + SynergyManager.sDistance+ ci.cDistance;
         moreSpeedCount = 0;
         debuffCount = 0;
     }
@@ -127,7 +129,7 @@ public class Fire : MonoBehaviour
                 shootTime = 0.1f;
             else
                 shootTime = defShootTime;
-            PlBullet pb = bulletPool.Get(0).gameObject.GetComponent<PlBullet>();
+            PlBullet pb = bulletPool.Get(SkillNum()).gameObject.GetComponent<PlBullet>();
             pb.gameObject.transform.position = transform.position;
             pb.targetEnemy = layder.nearestTarget;
             pb.shootSpeed = shootSpeed;
