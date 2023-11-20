@@ -108,7 +108,8 @@ GameObject:
   - component: {fileID: 6045283885947395321}
   - component: {fileID: 8211349950380048122}
   - component: {fileID: 5476423271557552862}
-  m_Layer: 5
+  - component: {fileID: 745306435338515879}
+  m_Layer: 13
   m_Name: Card4 (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -233,6 +234,25 @@ MonoBehaviour:
   champCost: 4
   champLv: 0
   Num: 6
+--- !u!114 &745306435338515879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5647080792624758968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27a59e7ba341f384cae76b933c0e16e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Unitname: 46
+  cost: 4
+  type: 2
+  atttype: 2
+  attinfo: "\uACF5\uACA9 :\r\n\uD55C \uBA85\uC758 \uC801\uC5D0\uAC8C\r\n\uD53C\uD574\uB97C
+    \uC900\uB2E4.\r\n"
+  skillinfo: "\uC2A4\uD0AC :\r\n3\uCD08\uAC04 \uAE30\uBCF8 \uACF5\uACA9\uC774\r\n\uD3ED\uBC1C\uD55C\uB2E4.\r\n"
 --- !u!1 &7630523426391791176
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
+using static UnityEditor.PlayerSettings;
 
 public class MouseRay : MonoBehaviour
 {
@@ -18,6 +21,7 @@ public class MouseRay : MonoBehaviour
     Vector3 setVec = new Vector3(0, 0,10);
     Vector2 beforeVec;
 
+   
     public bool test;
 
     private void Awake()
@@ -39,6 +43,8 @@ public class MouseRay : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
             ResetObj();
     }
+    
+
     void GetObj()
     {
         if (dragChamp != null)

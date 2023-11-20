@@ -35,7 +35,7 @@ public class ChampCard : MonoBehaviour
         costLine = transform.GetChild(0).gameObject.GetComponent<Image>();
         costLine.color = tierColor[champCost - 1];
         bm = BtnManager.Btn;
-        btn.onClick.AddListener(bm.BuyChamp);
+        btn.onClick.AddListener(bm.ObjInfo);
     }
 
 }

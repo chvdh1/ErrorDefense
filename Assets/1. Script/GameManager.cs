@@ -133,7 +133,6 @@ public class GameManager : MonoBehaviour
 
 
         ChampMng cm = ch.gameObject.GetComponent<ChampMng>();
-        cm.cSkill.poolManager = skillPool;
         cm.cFire.skillPool = skillPool;
         cm.cFire.gm = Instance;
         cm.cFire.bulletPool = bulletPool;
@@ -198,7 +197,6 @@ public class GameManager : MonoBehaviour
             if (fieldUnit[i] != null)
             {
                 ChampMng cm = fieldUnit[i].GetComponent<ChampMng>();
-                cm.cSkill.poolManager = skillPool;
                 cm.cFire.skillPool = skillPool;
                 cm.cFire.gm = Instance;
                 cm.cFire.StatUpdate();

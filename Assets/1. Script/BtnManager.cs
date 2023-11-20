@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Unity.Burst.CompilerServices;
 
 public class BtnManager : MonoBehaviour
 {
@@ -32,12 +33,20 @@ public class BtnManager : MonoBehaviour
     public GameObject mixItmeListG;
     GameObject[] mixItmeListbtn;
 
+    public GameObject cardInfo;
+    GameObject buyBt;
+    Text infoText;
+    CardInfoText card;
+    ChampCard buycard;
+    GameObject beforCardName;
     private void Awake()
     {
         Btn = this;
         gm = gameObject.GetComponent<GameManager>();
         ws = gm.ws;
         ui = manager.GetChild(0).gameObject.GetComponent<UIManager>();
+        infoText = cardInfo.transform.GetChild(0).GetComponent<Text>();
+        buyBt = cardInfo.transform.GetChild(1).gameObject;
         for (int i = 0; i < costObjs.Length; i++)
         {
             costObjs[i] = poolG.transform.GetChild(i+2).gameObject.GetComponent<PoolManager>();
@@ -71,162 +80,220 @@ public class BtnManager : MonoBehaviour
         gm.GameStart();       
     }
 
-    public void BuyChamp()//챔프 구매시
+  
+
+    public  void ObjInfo()
     {
-        //대기석 위치 선정
-        int seatPosNum = 0;
-        bool full = false;
-        for (int i = 0; i < 10; i++)
+        if (beforCardName != null || beforCardName != EventSystem.current.currentSelectedGameObject)
         {
-            if (i < 9 && ws.obj[i] == null)
-            {
-                seatPosNum = i;
-                full = false;
-                break;
-            }
-            else
-                full = true;
-        }
+            cardInfo.SetActive(true);
+            
+            beforCardName = EventSystem.current.currentSelectedGameObject;
+            card = beforCardName.GetComponent<CardInfoText>();
+            buycard = beforCardName.GetComponent<ChampCard>();
 
-        if (full)
-        {
-            StartCoroutine(ui.NoWaitingSeat());
-            return;
-        }
-        ChampCard cc = EventSystem.current.currentSelectedGameObject.GetComponent<ChampCard>();
-        int ccost = cc.champCost;
-
-        if (gm.coin < ccost)
-        {
-            StartCoroutine(ui.NoCoin());
-            return;
+            infoText.text = info(card.Unitname, card.cost, card.type, card.atttype, card.attinfo, card.skillinfo);
+            buyBt.transform.position = card.transform.position;
         }
         else
         {
-            gm.coin -= ccost;
-            ui.CoinUpdate();
+            cardInfo.SetActive(false);
+            beforCardName = null;
+            buycard = null;
         }
-          
-        Transform ch = costObjs[ccost - 1].Get(cc.Num-1).transform;
-        Debug.Log("구매 완료!");
-        
+    }
+    public void ObjInfofalse()
+    {
+        cardInfo.SetActive(false);
+        beforCardName = null;
+        buycard = null;
+    }
 
-        ChampMng cm = ch.gameObject.GetComponent<ChampMng>();
-        cm.cSkill.poolManager = gm.skillPool;
-        cm.cFire.skillPool =gm.skillPool;
-        cm.cFire.gm = gm;
-        cm.cFire.bulletPool = gm.bulletPool;
-        cm.cFire.seaNum = seatPosNum;
-        cm.cFire.StatUpdate();
-        ch.position = ws.pos[seatPosNum].transform.position;
-        ws.obj[seatPosNum] = ch.gameObject;
-        cc.gameObject.SetActive(false);
+    string info(string namem, int cost, int ty, int att, string attinfo, string skill)
+    {
+        string all = "";
+        string na = namem;
+        string coin = string.Format("비용 : {0}", cost);
+        string type = ty == 1 ? "타입 : 평타딜러" :
+            ty == 2 ? "타입 : 스킬딜러" :
+             ty == 3 ? "타입 : 디버프" : "타입 : 버프";
+        string at = att == 1 ? "근거리(1.5)" : "원거리(3)";
+        string atinfo = attinfo;
+        string skinfo = skill;
 
-        //카드 수량 제한
-        switch(ccost)
+        all = string.Format("{0}\n{1}\n{2}\n{4}\n{5}", na, coin, type, at, atinfo, skinfo);
+
+        return all;
+    }
+    public void BuyChamp()//챔프 구매시
+    {
+        if(buycard != null)
         {
-            case 1:
-                sm.cost1[cc.Num - 1].cCount++;
-                Debug.Log(sm.cost1[cc.Num - 1].cName + "/" + sm.cost1[cc.Num - 1].cCount + "/" + sm.cost1[cc.Num - 1].cMax);
-                break;
-            case 2:
-                sm.cost2[cc.Num - 1].cCount++;
-                Debug.Log(sm.cost2[cc.Num - 1].cName + "/" + sm.cost2[cc.Num - 1].cCount + "/" + sm.cost2[cc.Num - 1].cMax);
-                break;
-            case 3:
-                sm.cost3[cc.Num - 1].cCount++;
-                Debug.Log(sm.cost3[cc.Num - 1].cName + "/" + sm.cost3[cc.Num - 1].cCount + "/" + sm.cost3[cc.Num - 1].cMax);
-                break;
-            case 4:
-                sm.cost4[cc.Num - 1].cCount++;
-                Debug.Log(sm.cost4[cc.Num - 1].cName + "/" + sm.cost4[cc.Num - 1].cCount + "/" + sm.cost4[cc.Num - 1].cMax);
-                break;
-            case 5:
-                sm.cost5[cc.Num - 1].cCount++;
-                Debug.Log(sm.cost5[cc.Num - 1].cName + "/" + sm.cost5[cc.Num - 1].cCount + "/" + sm.cost5[cc.Num - 1].cMax);
-                break;
+            //대기석 위치 선정
+            int seatPosNum = 0;
+            bool full = false;
+            for (int i = 0; i < 10; i++)
+            {
+                if (i < 9 && ws.obj[i] == null)
+                {
+                    seatPosNum = i;
+                    full = false;
+                    break;
+                }
+                else
+                    full = true;
+            }
+
+            if (full)
+            {
+                StartCoroutine(ui.NoWaitingSeat());
+                cardInfo.SetActive(false);
+                beforCardName = null;
+                buycard = null;
+                return;
+            }
+            ChampCard cc = buycard;
+            int ccost = cc.champCost;
+
+            if (gm.coin < ccost)
+            {
+                StartCoroutine(ui.NoCoin());
+                cardInfo.SetActive(false);
+                beforCardName = null;
+                buycard = null;
+                return;
+            }
+            else
+            {
+                gm.coin -= ccost;
+                ui.CoinUpdate();
+            }
+
+            Transform ch = costObjs[ccost - 1].Get(cc.Num - 1).transform;
+            Debug.Log("구매 완료!");
+
+
+            ChampMng cm = ch.gameObject.GetComponent<ChampMng>();
+            cm.cFire.skillPool = gm.skillPool;
+            cm.cFire.gm = gm;
+            cm.cFire.bulletPool = gm.bulletPool;
+            cm.cFire.seaNum = seatPosNum;
+            cm.cFire.StatUpdate();
+            ch.position = ws.pos[seatPosNum].transform.position;
+            ws.obj[seatPosNum] = ch.gameObject;
+            cc.gameObject.SetActive(false);
+
+            //카드 수량 제한
+            switch (ccost)
+            {
+                case 1:
+                    sm.cost1[cc.Num - 1].cCount++;
+                    Debug.Log(sm.cost1[cc.Num - 1].cName + "/" + sm.cost1[cc.Num - 1].cCount + "/" + sm.cost1[cc.Num - 1].cMax);
+                    break;
+                case 2:
+                    sm.cost2[cc.Num - 1].cCount++;
+                    Debug.Log(sm.cost2[cc.Num - 1].cName + "/" + sm.cost2[cc.Num - 1].cCount + "/" + sm.cost2[cc.Num - 1].cMax);
+                    break;
+                case 3:
+                    sm.cost3[cc.Num - 1].cCount++;
+                    Debug.Log(sm.cost3[cc.Num - 1].cName + "/" + sm.cost3[cc.Num - 1].cCount + "/" + sm.cost3[cc.Num - 1].cMax);
+                    break;
+                case 4:
+                    sm.cost4[cc.Num - 1].cCount++;
+                    Debug.Log(sm.cost4[cc.Num - 1].cName + "/" + sm.cost4[cc.Num - 1].cCount + "/" + sm.cost4[cc.Num - 1].cMax);
+                    break;
+                case 5:
+                    sm.cost5[cc.Num - 1].cCount++;
+                    Debug.Log(sm.cost5[cc.Num - 1].cName + "/" + sm.cost5[cc.Num - 1].cCount + "/" + sm.cost5[cc.Num - 1].cMax);
+                    break;
+            }
+
+            //진화 확인
+            int c = ((ccost - 1) * 8) + cc.Num - 1;
+            for (int star1i = 0; star1i < gm.ul.lv1Units[c].Length; star1i++)
+            {
+                if (gm.ul.lv1Units[c][star1i] == null && star1i != 2)
+                {
+                    gm.ul.lv1Units[c][star1i] = ch.gameObject;
+                    break;
+                }
+                else if (gm.ul.lv1Units[c][star1i] == null && star1i == 2)
+                {
+                    Fire setunit1 = gm.ul.lv1Units[c][0].GetComponent<Fire>();
+                    Fire setunit2 = gm.ul.lv1Units[c][1].GetComponent<Fire>();
+                    setunit1.seaNum = 0;
+                    setunit1.inField = false;
+                    setunit2.seaNum = 0;
+                    setunit2.inField = false;
+                    for (int m = 0; m < gm.fieldUnit.Length; m++)
+                    {
+                        if (gm.ul.lv1Units[c][0] == gm.fieldUnit[m] || gm.ul.lv1Units[c][1] == gm.fieldUnit[m])
+                        {
+                            gm.fieldUnit[m].SetActive(false);
+                            gm.fieldUnit[m] = null;
+                        }
+
+                    }
+                    for (int w = 0; w < ws.obj.Length; w++)
+                    {
+                        if (gm.ul.lv1Units[c][0] == ws.obj[w] || gm.ul.lv1Units[c][1] == ws.obj[w])
+                        {
+                            ws.obj[w].SetActive(false);
+                            ws.obj[w] = null;
+                        }
+                    }
+                    gm.ul.lv1Units[c][0] = null;
+                    gm.ul.lv1Units[c][1] = null;
+                    cm.cFire.lv++;
+                    cm.cFire.LvUp();
+                    for (int star2i = 0; star2i < gm.ul.lv2Units[c].Length; star2i++)
+                    {
+                        if (gm.ul.lv2Units[c][star2i] == null && star2i != 2)
+                        {
+                            gm.ul.lv2Units[c][star2i] = ch.gameObject;
+                            break;
+                        }
+                        else if (gm.ul.lv1Units[c][star2i] == null && star2i == 2)
+                        {
+                            Fire setunit3 = gm.ul.lv2Units[c][0].GetComponent<Fire>();
+                            Fire setunit4 = gm.ul.lv2Units[c][1].GetComponent<Fire>();
+                            setunit3.seaNum = 0;
+                            setunit3.inField = false;
+                            setunit4.seaNum = 0;
+                            setunit4.inField = false;
+                            for (int m = 0; m < gm.fieldUnit.Length; m++)
+                            {
+                                if (gm.ul.lv2Units[c][0] == gm.fieldUnit[m] || gm.ul.lv2Units[c][1] == gm.fieldUnit[m])
+                                {
+                                    gm.fieldUnit[m].SetActive(false);
+                                    gm.fieldUnit[m] = null;
+                                }
+
+                            }
+                            for (int w = 0; w < ws.obj.Length; w++)
+                            {
+                                if (gm.ul.lv2Units[c][0] == ws.obj[w] || gm.ul.lv2Units[c][1] == ws.obj[w])
+                                {
+                                    ws.obj[w].SetActive(false);
+                                    ws.obj[w] = null;
+                                }
+                            }
+                            gm.ul.lv2Units[c][0] = null;
+                            gm.ul.lv2Units[c][1] = null;
+                            cm.cFire.lv++;
+                            cm.cFire.LvUp();
+                            gm.SynergyUpdate();
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
-        //진화 확인
-        int c = ((ccost - 1) * 8) + cc.Num - 1;
-        for (int star1i = 0; star1i < gm.ul.lv1Units[c].Length; star1i++)
-        {
-            if (gm.ul.lv1Units[c][star1i] == null && star1i != 2)
-            {
-                gm.ul.lv1Units[c][star1i] = ch.gameObject;
-                break;
-            }
-            else if (gm.ul.lv1Units[c][star1i] == null && star1i == 2)
-            {
-                Fire setunit1 = gm.ul.lv1Units[c][0].GetComponent<Fire>();
-                Fire setunit2 = gm.ul.lv1Units[c][1].GetComponent<Fire>();
-                setunit1.seaNum = 0;
-                setunit1.inField = false;
-                setunit2.seaNum = 0;
-                setunit2.inField = false;
-                for (int m = 0; m < gm.fieldUnit.Length; m++)
-                {
-                    if (gm.ul.lv1Units[c][0] == gm.fieldUnit[m] || gm.ul.lv1Units[c][1] == gm.fieldUnit[m])
-                    {
-                        gm.fieldUnit[m].SetActive(false);
-                        gm.fieldUnit[m] = null;
-                    }
-                       
-                }
-                for (int w = 0; w < ws.obj.Length; w++)
-                {
-                    if (gm.ul.lv1Units[c][0] == ws.obj[w] || gm.ul.lv1Units[c][1] == ws.obj[w])
-                    {
-                        ws.obj[w].SetActive(false);
-                        ws.obj[w] = null;
-                    }
-                }
-                gm.ul.lv1Units[c][0] = null;
-                gm.ul.lv1Units[c][1] = null;
-                cm.cFire.lv++;
-                cm.cFire.LvUp();
-                for (int star2i = 0; star2i < gm.ul.lv2Units[c].Length; star2i++)
-                {
-                    if (gm.ul.lv2Units[c][star2i] == null && star2i != 2)
-                    {
-                        gm.ul.lv2Units[c][star2i] = ch.gameObject;
-                        break;
-                    }
-                    else if (gm.ul.lv1Units[c][star2i] == null && star2i == 2)
-                    {
-                        Fire setunit3 = gm.ul.lv2Units[c][0].GetComponent<Fire>();
-                        Fire setunit4 = gm.ul.lv2Units[c][1].GetComponent<Fire>();
-                        setunit3.seaNum = 0;
-                        setunit3.inField = false;
-                        setunit4.seaNum = 0;
-                        setunit4.inField = false;
-                        for (int m = 0; m < gm.fieldUnit.Length; m++)
-                        {
-                            if (gm.ul.lv2Units[c][0] == gm.fieldUnit[m] || gm.ul.lv2Units[c][1] == gm.fieldUnit[m])
-                            {
-                                gm.fieldUnit[m].SetActive(false);
-                                gm.fieldUnit[m] = null;
-                            }
-                               
-                        }
-                        for (int w = 0; w < ws.obj.Length; w++)
-                        {
-                            if (gm.ul.lv2Units[c][0] == ws.obj[w] || gm.ul.lv2Units[c][1] == ws.obj[w])
-                            {
-                                ws.obj[w].SetActive(false);
-                                ws.obj[w] = null;
-                            }
-                        }
-                        gm.ul.lv2Units[c][0] = null;
-                        gm.ul.lv2Units[c][1] = null;
-                        cm.cFire.lv++;
-                        cm.cFire.LvUp();
-                        gm.SynergyUpdate();
-                        break;
-                    }
-                }
-            }
-        }
+        cardInfo.SetActive(false);
+        beforCardName = null;
+        buycard = null;
+
     }
 
     public void BuyExp()
