@@ -76,8 +76,10 @@ public class BtnManager : MonoBehaviour
 
     public void StageOneBtn()
     {
+        GameObject startbt = EventSystem.current.currentSelectedGameObject;
         gm.mapIndex = 1;
-        gm.GameStart();       
+        gm.GameStart();
+        startbt.SetActive(false) ;
     }
 
   

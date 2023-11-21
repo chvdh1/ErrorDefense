@@ -39,7 +39,6 @@ public class UIManager : MonoBehaviour
 
     public Image timeBar;
     public GameObject lvHp;
-    Image hp;
     Image exp;
     Text lvText;
     Text hpText;
@@ -57,7 +56,6 @@ public class UIManager : MonoBehaviour
     private void Awake()
     {
         uIManager = this;
-        hp = lvHp.transform.GetChild(0).gameObject.GetComponent<Image>();
         exp = lvHp.transform.GetChild(2).gameObject.GetComponent<Image>();
         lvText = lvHp.transform.GetChild(3).GetChild(0).gameObject.GetComponent<Text>();
         expText = lvHp.transform.GetChild(3).GetChild(1).gameObject.GetComponent<Text>();
@@ -74,9 +72,6 @@ public class UIManager : MonoBehaviour
 
     public void HpUpdate()
     {
-        float a = gm.hp / gm.maxHp <= 1 ? gm.hp / gm.maxHp : 1;
-
-        hp.fillAmount = a;
         hpText.text = string.Format("{0}", gm.hp);
     }
 
@@ -278,11 +273,17 @@ public class UIManager : MonoBehaviour
                     synergyInfos[i].sStep == 1 ? c1 : c0;
 
                 //알맞는 택스트 변화
-                sBtnText[i].text = synergyInfos[i].sStep == 4 ? string.Format("{0} {1}\n{2} / {3} / {4} / <size=200>{5}</size>", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
-                     synergyInfos[i].sStep == 3 ? string.Format("{0} {1}\n{2} / {3} / <size=200>{4}</size> / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
-                      synergyInfos[i].sStep == 2 ? string.Format("{0} {1}\n{2} / <size=200>{3}</size> / {4} / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
-                       synergyInfos[i].sStep == 1 ? string.Format("{0} {1}\n<size=200>{2}</size> / {3} / {4} / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
-                       string.Format("{0} {1}\n{2} / {3} / {4} / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4);
+                int nextstepint = synergyInfos[i].sStep == 4 ? synergyInfos[i].sStep4 :
+                   synergyInfos[i].sStep == 3 ? synergyInfos[i].sStep3 :
+                   synergyInfos[i].sStep == 2 ? synergyInfos[i].sStep2 : synergyInfos[i].sStep1;
+                sBtnText[i].text = string.Format("{0}/{1}", synergyInfos[i].sCount, nextstepint);
+
+
+                //sBtnText[i].text = synergyInfos[i].sStep == 4 ? string.Format("{0} {1}\n{2} / {3} / {4} / <size=200>{5}</size>", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
+                //     synergyInfos[i].sStep == 3 ? string.Format("{0} {1}\n{2} / {3} / <size=200>{4}</size> / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
+                //      synergyInfos[i].sStep == 2 ? string.Format("{0} {1}\n{2} / <size=200>{3}</size> / {4} / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
+                //       synergyInfos[i].sStep == 1 ? string.Format("{0} {1}\n<size=200>{2}</size> / {3} / {4} / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4) :
+                //       string.Format("{0} {1}\n{2} / {3} / {4} / {5}", synergyInfos[i].sName, synergyInfos[i].sCount, synergyInfos[i].sStep1, synergyInfos[i].sStep2, synergyInfos[i].sStep3, synergyInfos[i].sStep4);
 
 
                 //시너지 버튼이 정보를 가지도록
