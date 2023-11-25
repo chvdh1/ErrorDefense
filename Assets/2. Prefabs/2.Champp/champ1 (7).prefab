@@ -310,9 +310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cItems: {fileID: 0}
-  cSkill: {fileID: 0}
   cFire: {fileID: 0}
-  cPl: {fileID: 0}
   cSynergy: {fileID: 0}
   cTargeting: {fileID: 0}
 --- !u!114 &-9202734903789412997

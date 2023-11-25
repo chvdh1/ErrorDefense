@@ -1,11 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Unity.Burst.CompilerServices;
 
 public class BtnManager : MonoBehaviour
 {
@@ -39,6 +36,7 @@ public class BtnManager : MonoBehaviour
     CardInfoText card;
     ChampCard buycard;
     GameObject beforCardName;
+
     private void Awake()
     {
         Btn = this;
@@ -127,6 +125,7 @@ public class BtnManager : MonoBehaviour
 
         return all;
     }
+    Vector3 setVec = new Vector3(0, 0, 10);
     public void BuyChamp()//Ã¨ÇÁ ±¸¸Å½Ã
     {
         if(buycard != null)
@@ -181,7 +180,7 @@ public class BtnManager : MonoBehaviour
             cm.cFire.bulletPool = gm.bulletPool;
             cm.cFire.seaNum = seatPosNum;
             cm.cFire.StatUpdate();
-            ch.position = ws.pos[seatPosNum].transform.position;
+            ch.position = Camera.main.ScreenToWorldPoint(ws.pos[seatPosNum].transform.position)+ setVec;
             ws.obj[seatPosNum] = ch.gameObject;
             cc.gameObject.SetActive(false);
 
@@ -297,6 +296,25 @@ public class BtnManager : MonoBehaviour
         buycard = null;
 
     }
+    public RectTransform shop;
+    public void ShopOpen()
+    {
+        float x = shop.anchoredPosition.x;
+        if (x > 1000)
+            shop.anchoredPosition = new Vector2(0, 0);
+        else
+            shop.anchoredPosition = new Vector2(1200, 0);
+    }
+    public RectTransform item;
+    public void ItemOpen()
+    {
+        float x = item.anchoredPosition.x;
+        if (x < -1000)
+            item.anchoredPosition = new Vector2(0, 0);
+        else
+            item.anchoredPosition = new Vector2(-1200, 0);
+    }
+
 
     public void BuyExp()
     {
@@ -754,5 +772,47 @@ public class BtnManager : MonoBehaviour
                 box.SetActive(false);
             itemNum = 0;
         }
+    }
+
+    public GameObject pause;
+    public GameObject settins;
+    public GameObject gameUIG;
+
+    public void PauseBtnOnOff()
+    {
+        if(pause.activeSelf)
+        {
+            settins.SetActive(false);
+            gameUIG.SetActive(true);
+            Time.timeScale = 1;
+        }
+        else
+        {
+            pause.SetActive(true);
+            gameUIG.SetActive(false);
+            Time.timeScale = 0;
+        }    
+    }
+
+    public void Settins() 
+    {
+        if (settins.activeSelf)
+        {
+            settins.SetActive(false);
+        }
+        else
+        {
+            settins.SetActive(true);
+        }
+
+    }
+
+    public void Replay()
+    {
+
+    }
+    public void Home()
+    {
+
     }
 }

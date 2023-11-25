@@ -39,12 +39,14 @@ public class UIManager : MonoBehaviour
 
     public Image timeBar;
     public GameObject lvHp;
-    Image exp;
+    public GameObject expBtn;
     Text lvText;
+    Image exp;
     Text hpText;
     Text expText;
 
     public Text coinText;
+    public Text shopCoinText;
     public Image continuity;
     public Sprite[] continuitySprites;
     Text continuityText;
@@ -56,10 +58,10 @@ public class UIManager : MonoBehaviour
     private void Awake()
     {
         uIManager = this;
-        exp = lvHp.transform.GetChild(2).gameObject.GetComponent<Image>();
-        lvText = lvHp.transform.GetChild(3).GetChild(0).gameObject.GetComponent<Text>();
-        expText = lvHp.transform.GetChild(3).GetChild(1).gameObject.GetComponent<Text>();
-        hpText = lvHp.transform.GetChild(4).gameObject.GetComponent<Text>();
+        lvText = expBtn.transform.GetChild(1).GetChild(0).gameObject.GetComponent<Text>();
+        expText = expBtn.transform.GetChild(0).gameObject.GetComponent<Text>();
+        exp = expBtn.transform.GetChild(1).GetChild(1).GetChild(0).GetComponent<Image>();
+        hpText = lvHp.transform.GetChild(0).gameObject.GetComponent<Text>();
         continuityText = continuity.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>();
         for (int i = 0; i < sBtn.Length; i++)
         {
@@ -95,6 +97,7 @@ public class UIManager : MonoBehaviour
     public void CoinUpdate()
     {
         coinText.text = string.Format("{0}", gm.coin);
+        shopCoinText.text = string.Format("{0}", gm.coin);
     }
 
     public IEnumerator NoCoin()
@@ -102,7 +105,7 @@ public class UIManager : MonoBehaviour
         if (noText.color.a > 0.1f)
             yield break;
 
-        noText.text = "코인이 부족합니다.";
+        noText.text = "코인이\n부족합니다.";
         noText.color = new Color(1, 1, 1, 1);
         float c = 1;
         while (noText.color.a > 0)
@@ -116,7 +119,7 @@ public class UIManager : MonoBehaviour
     {
         if (noText.color.a > 0.1f)
             yield break;
-        noText.text = "대기석에 자리가 없습니다.";
+        noText.text = "대기석에\n자리가 없습니다.";
         noText.color = new Color(1, 1, 1, 1);
         float c = 1;
         while (noText.color.a > 0)
@@ -131,7 +134,7 @@ public class UIManager : MonoBehaviour
         if (noText.color.a > 0.1f)
             yield break;
 
-        noText.text = "빈자리가 없습니다.";
+        noText.text = "빈자리가\n없습니다.";
         noText.color = new Color(1, 1, 1, 1);
         float c = 1;
         while (noText.color.a > 0)
@@ -147,7 +150,7 @@ public class UIManager : MonoBehaviour
         if (noText.color.a > 0.1f)
             yield break;
 
-        noText.text = "설치할 수 없는 지역입니다.";
+        noText.text = "설치할 수 없는\n지역입니다.";
         noText.color = new Color(1, 1, 1, 1);
         float c = 1;
         while (noText.color.a > 0)
@@ -162,7 +165,7 @@ public class UIManager : MonoBehaviour
         if (noText.color.a > 0.1f)
             yield break;
 
-        noText.text = "더이상 아이템을 장착할 수 없습니다.";
+        noText.text = "더이상 아이템을\n장착할 수 없습니다.";
         noText.color = new Color(1, 1, 1, 1);
         float c = 1;
         while (noText.color.a > 0)
@@ -177,7 +180,7 @@ public class UIManager : MonoBehaviour
         if (noText.color.a > 0.1f)
             yield break;
 
-        noText.text = "아이템을 장착할 유닛을 터치하세요.";
+        noText.text = "아이템을 장착할\n유닛을 터치하세요.";
         noText.color = new Color(1, 1, 1, 1);
         while (gm.bt.equipItem)
         {

@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
-using static UnityEditor.PlayerSettings;
 
 public class Fire : MonoBehaviour
 {

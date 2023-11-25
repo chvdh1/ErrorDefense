@@ -101,9 +101,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyNum: 6
-  MaxHp: 100
+  maxHp: 0
   hp: 0
+  defDef: 0
+  def: 0
   dmg: 1
+  haveItem: 0
 --- !u!114 &879600788387006882
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,13 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System.Text.RegularExpressions;
-using System;
 
 public class Ag
 {
@@ -162,6 +157,8 @@ public class AgManager : MonoBehaviour
 
     public void SpawnAg()
     {
+        if (agGroup.transform.parent.gameObject.activeSelf)
+            return;
         agGroup.transform.parent.gameObject.SetActive(true);
 
         switch (agClass[agCount])
@@ -169,7 +166,7 @@ public class AgManager : MonoBehaviour
             case 0:
                 for (int i = 0; i < 3; i++)
                 {
-                    int ran = UnityEngine.Random.Range(0, ags0.Count);
+                    int ran = Random.Range(0, ags0.Count);
                     ags0[ran].aBtn.SetActive(true);
                     selags.Add(ags0[ran]);
                     ags0.Remove(ags0[ran]);
@@ -178,7 +175,7 @@ public class AgManager : MonoBehaviour
             case 1:
                 for (int i = 0; i < 3; i++)
                 {
-                    int ran = UnityEngine.Random.Range(0, ags1.Count);
+                    int ran = Random.Range(0, ags1.Count);
                     ags1[ran].aBtn.SetActive(true);
                     selags.Add(ags1[ran]);
                     ags1.Remove(ags1[ran]);
@@ -188,7 +185,7 @@ public class AgManager : MonoBehaviour
             case 2:
                 for (int i = 0; i < 3; i++)
                 {
-                    int ran = UnityEngine.Random.Range(0, ags2.Count);
+                    int ran = Random.Range(0, ags2.Count);
                     ags2[ran].aBtn.SetActive(true);
                     selags.Add(ags2[ran]);
                     ags2.Remove(ags2[ran]);

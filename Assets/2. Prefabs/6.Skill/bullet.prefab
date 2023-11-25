@@ -162,11 +162,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   champNum: 0
-  defSkillDmgPer: 0
-  skillDmgPer: 0
   poolManager: {fileID: 0}
   dmg: 0
+  trueDmg: 0
   shootSpeed: 0
   targetEnemy: {fileID: 0}
   cri: 0
   superCri: 0
+  slow: 0
+  knockback: 0
+  stun: 0
+  spAtt: 0

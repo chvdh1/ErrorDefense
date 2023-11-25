@@ -1,13 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using System;
 using UnityEngine.UIElements;
-using Debug = UnityEngine.Debug;
-using UnityEngine.PlayerLoop;
 
 public class GameManager : MonoBehaviour
 {
@@ -46,11 +41,16 @@ public class GameManager : MonoBehaviour
 
     //스테이지 관련 변수
     public int mapIndex;
-    public GameObject maps;
-    public GameObject[] mapPointParent;
-    public GameObject[] mapPoints;
-    public GameObject noSetP;
-    GameObject[] noSet;
+    public GameObject mapTileParent;
+    public GameObject[] mapTiles = new GameObject[100];
+    public GameObject[] mapPoints;//유닛 이동 포인트들
+    public int[] map1NoSetPosNum = new int[] { 0, 1, 2, 3, 6, 8, 10, 13, 16, 18, 20, 23, 26, 28, 30, 31, 32, 33, 34, 35, 36, 37, 38, 43, 46, 53, 56, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 73, 76, 79, 80, 83, 86, 89, 90, 91, 92, 93, 96, 97, 98, 99};
+    public int[] map2NoSetPosNum = new int[] { 8, 18, 28, 38, 37, 36, 35, 34, 33, 32, 31, 30, 20, 10, 0, 1, 2, 3, 13, 23, 43, 53, 63, 73, 83, 93, 92, 91, 90, 80, 70, 60, 61, 62, 64, 65, 66, 67, 68, 78, 88, 98, 97, 96, 86, 76, 56, 46, 26, 16, 6 };
+    public int[] map3NoSetPosNum = new int[51];
+    LineR lineR;
+    public int[] map1Lines = new int[] { 30, 0, 3, 93, 90, 60, 69, 99, 96};
+
+
     public int stageIndex;
     public static bool passEnemy;
 
@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
     public PoolManager bulletPool;
     public PoolManager skillPool;
     public GameObject goal;
-    public Transform[] spawnPos;
+    public Transform spawnPos;
 
 
     private void Awake()
@@ -70,26 +70,20 @@ public class GameManager : MonoBehaviour
         Instance = this;
         gameover = () => { GameOver(); };
         bt = GetComponent<BtnManager>();
+        lineR = mapTileParent.GetComponent<LineR>();
+        //타일들 인지
+        for (int i = 0; i < mapTiles.Length; i++)
+        {
+            mapTiles[i] = mapTileParent.transform.GetChild(i).gameObject;
+        }
 
-        int mapPointParents = maps.transform.childCount;
-        mapPointParent = new GameObject[mapPointParents];
-        for (int i = 0; i < mapPointParent.Length; i++)
-        {
-            mapPointParent[i] = maps.transform.GetChild(i).gameObject;
-        }
-        int n = noSetP.transform.childCount;
-        noSet = new GameObject[n];
-        for (int i = 0; i < noSet.Length; i++)
-        {
-            noSet[i] = noSetP.transform.GetChild(i).gameObject;
-        }
         ul = GetComponent<UnitLvManager>();
         itempool = poolG.GetChild(13).gameObject.GetComponent<PoolManager>();
         Application.targetFrameRate = 60; //실행 프레임 속도 60프레임으로 고정 시키기.. 코드
         QualitySettings.vSyncCount = 0;
         //모니터 주사율(플레임율)이 다른 컴퓨터일 경우 캐릭터 조작시 빠르게 움직일 수 있다.
     }
-
+    Vector3 setVec = new Vector3(0, 0, 10);
     public void GameStart()
     {
         //최대체력으로 시작
@@ -107,19 +101,24 @@ public class GameManager : MonoBehaviour
         passEnemy = false;
 
         //지정 맵 소환, 그외 비활성화
-        for (int i = 0; i < noSet.Length; i++)
-        {
-            if(i == mapIndex-1)
+        //경로 표시
+        int noposzon = 0;
+        if(mapIndex == 1)
+            for (int i = 0; i < mapTiles.Length; i++)
             {
-                noSet[i].SetActive(true);
-                mapPointParent[i].SetActive(true);
+                SpriteRenderer sp = mapTiles[i].GetComponent<SpriteRenderer>();
+                if(i == map1NoSetPosNum[noposzon])
+                {
+                    mapTiles[i].layer = 10;
+                    sp.color = new Color(0, 0, 0, 0.5f);
+                    noposzon++;
+                }
+                else
+                {
+                    mapTiles[i].layer = 14;
+                    sp.color = new Color(0, 0, 0, 0);
+                }
             }
-            else
-            {
-                noSet[i].SetActive(false);
-                mapPointParent[i].SetActive(false);
-            }
-        }
 
         //시너지,증강체 및 챔프 리스트 초기화
         ui.SynergyReset();
@@ -138,19 +137,16 @@ public class GameManager : MonoBehaviour
         cm.cFire.bulletPool = bulletPool;
         cm.cFire.StatUpdate();
         ws.obj[0] = ch.gameObject;
-        ch.position = ws.pos[0].transform.position;
+        ch.position = Camera.main.ScreenToWorldPoint(ws.pos[0].transform.position)+setVec;
 
         ul.lv1Units[z][0] = ch.gameObject;
-
+       
         //적 무브포인트 인지
-        int count = mapPointParent[mapIndex-1].transform.childCount;
-        mapPoints = new GameObject[count+1];
-        for (int i = 0; i < mapPoints.Length; i++)
+        if (mapIndex == 1)
         {
-            if (i < mapPoints.Length - 1)
-                mapPoints[i] = mapPointParent[mapIndex-1].transform.GetChild(i).gameObject;
-            else
-                mapPoints[i] = goal;
+            mapPoints = new GameObject[] { mapTiles[38], mapTiles[30], mapTiles[0], mapTiles[3], mapTiles[93], mapTiles[90], mapTiles[60], mapTiles[69], mapTiles[99], mapTiles[96], goal };
+            spawnPos.position = new Vector2 ( mapTiles[8].transform.position.x, mapTiles[8].transform.position.y + 1);
+            goal.transform.position = new Vector2(mapTiles[6].transform.position.x, mapTiles[6].transform.position.y + 1);
         }
 
         StartCoroutine(DelayTime());
@@ -287,7 +283,7 @@ public class GameManager : MonoBehaviour
         {
             GameObject enemy = enemyPool.Get(rantype);
             EnemyStat enemyStat = enemy.GetComponent<EnemyStat>();
-            enemy.transform.position = spawnPos[mapIndex-1].position;
+            enemy.transform.position = spawnPos.position;
             fieldEnemys[i] = enemy;
             EnemyMove em = enemy.GetComponent<EnemyMove>();
             em.goal = goal;
