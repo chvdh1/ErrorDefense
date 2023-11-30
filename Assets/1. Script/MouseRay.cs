@@ -12,7 +12,7 @@ public class MouseRay : MonoBehaviour
 
     public SpriteRenderer champRange;
 
-    public Vector2 defultVec = new Vector2(0, 1);
+    public Vector2 defultVec = new Vector2(0, 2f);
     Vector3 setVec = new Vector3(0, 0,10);
     Vector2 beforeVec;
 
@@ -105,8 +105,8 @@ public class MouseRay : MonoBehaviour
             else
             {
                 for (int i = 0; i < objSwitch.Length; i++)
-            objSwitch[i].SetActive(false);
-        sellA.SetActive(true);
+                    objSwitch[i].SetActive(false);
+                sellA.SetActive(true);
             }
               
 
@@ -138,14 +138,17 @@ public class MouseRay : MonoBehaviour
     {
         if (dragChamp == null)
             return;
-        if(champRange.color.a == 0)
-            champRange.color = new Color(0, 0.6f, 1, 0.3f);
+       
 
         Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero, 10);
 
         if(hit.collider != null&&  hit.collider.gameObject.layer == 14)
+        {
             champRange.transform.position = hit.collider.transform.position;
+            if (champRange.color.a == 0)
+                champRange.color = new Color(0, 0.6f, 1, 0.3f);
+        }
 
         dragChamp.transform.position =new Vector2(pos.x, pos.y + defultVec.y);
     }

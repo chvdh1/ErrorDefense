@@ -46,11 +46,14 @@ public class Fire : MonoBehaviour
 
     float timespeed;
 
+    GameObject roObj;
+
     private void Awake()
     {
         star = transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>();
         ci = GetComponent<Champitems>();
         sg = GetComponent<Synergy>();
+        roObj = transform.GetChild(0).gameObject;
     }
 
     private void OnEnable()
@@ -110,7 +113,7 @@ public class Fire : MonoBehaviour
         }
         
     }
-
+   
     void Shoot()
     {
         if (layder.nearestTarget == null)
@@ -132,8 +135,13 @@ public class Fire : MonoBehaviour
             pb.shootSpeed = shootSpeed;
             pb.debuff = ci.cDefDebuff && debuffCount > 2 ? true : false;
 
-                //农府 拌魂
-                int cri = Random.Range(0, 100);
+            //葛记
+            Vector2 n = layder.nearestTarget.transform.position - transform.position;
+            float a = Mathf.Atan2(n.x, n.y) * Mathf.Rad2Deg;
+            roObj.transform.rotation = Quaternion.AngleAxis(-a+90,Vector3.forward);
+
+            //农府 拌魂
+            int cri = Random.Range(0, 100);
             int superCri = Random.Range(0, 100);
             pb.dmg = cri < criPer ?  ci.cSuperCri && superCri < 10 ?
             (dmg + (dmg * (150 + criDmg) / 100)) //酱欺农府

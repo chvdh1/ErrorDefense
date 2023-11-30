@@ -15,7 +15,12 @@ public class EnemyMove : MonoBehaviour
     public bool fly;
     public bool slow;
 
+    GameObject sprite;
 
+    private void Awake()
+    {
+        sprite = transform.GetChild(0).gameObject;
+    }
     private void OnEnable()
     {
         movePointIndex = 0;
@@ -38,7 +43,7 @@ public class EnemyMove : MonoBehaviour
     {
         if (movePoint.Length == 0)
             return;
-
+        Vector2 before = transform.position;
 
         if (!fly)
         {
@@ -60,5 +65,10 @@ public class EnemyMove : MonoBehaviour
           Vector2.MoveTowards(transform.position,
           goal.transform.position, moveSpeed * Time.deltaTime);
         }
+        Vector2 after = transform.position;
+        float y = before.y - after.y > 0 ? 180 : 0;
+        float x = before.x - after.x > 0 ? 90 : before.x - after.x < 0 ? -90 : 0;
+        sprite.transform.rotation = Quaternion.Euler(0, 0, x+y);  
+
     }
 }

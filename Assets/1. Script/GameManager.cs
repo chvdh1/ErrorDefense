@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+
+    public static Action startGame;
     public UIManager ui;
     public WaitingSeat ws;
     public ShopManager sm;
@@ -69,6 +70,7 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         gameover = () => { GameOver(); };
+        startGame = () => { GameStart(); };
         bt = GetComponent<BtnManager>();
         lineR = mapTileParent.GetComponent<LineR>();
         //타일들 인지
@@ -84,6 +86,12 @@ public class GameManager : MonoBehaviour
         //모니터 주사율(플레임율)이 다른 컴퓨터일 경우 캐릭터 조작시 빠르게 움직일 수 있다.
     }
     Vector3 setVec = new Vector3(0, 0, 10);
+
+    private void Start()
+    {
+        mapIndex = 1;
+        GameStart();
+    }
     public void GameStart()
     {
         //최대체력으로 시작

@@ -10,9 +10,11 @@ public class Targeting : MonoBehaviour
     public RaycastHit2D[] targets;
     public Transform nearestTarget;
 
+    
     private void OnEnable()
     {
         scanRange = defScanRange + SynergyManager.sDistance;
+
     }
 
     private void FixedUpdate()
@@ -21,11 +23,13 @@ public class Targeting : MonoBehaviour
         targets = Physics2D.CircleCastAll(transform.position, scanRange, Vector2.zero, 0, targetLayer);
         nearestTarget = GetNearest();
     }
+       
 
     Transform GetNearest()
     {
         Transform result = null;
         float diff = 100;
+
 
         foreach(RaycastHit2D target in targets)
         {
@@ -39,6 +43,8 @@ public class Targeting : MonoBehaviour
                 result = target.transform;
             }
         }
+        
+
         return result;
     }
 }

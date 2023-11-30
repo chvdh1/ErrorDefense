@@ -54,7 +54,7 @@ public class Champitems : MonoBehaviour
         //소켓들의 정보 정리
         for (int i = 0; i < sockets.Length; i++)
         {
-            if (sockets[i].itemNum != 0)
+            if (sockets[i] != null && sockets[i].itemNum != 0)
             {
                 int imNum = sockets[i].itemNum < 10 ? sockets[i].itemNum - 1 : sockets[i].itemNum < 20 ? sockets[i].itemNum - 4 :
                      sockets[i].itemNum < 30 ? sockets[i].itemNum - 8 : sockets[i].itemNum < 40 ? sockets[i].itemNum - 13 :
@@ -90,7 +90,7 @@ public class Champitems : MonoBehaviour
 
         for (int i = 0; i < sockets.Length; i++)
         {
-            if (sockets[i] != null)
+            if (sockets[i] != null&& sockets[i] != null)
             {
                 cDmg += sockets[i].iDmg;
                 cAttSpeed += sockets[i].iAttSpeed;
